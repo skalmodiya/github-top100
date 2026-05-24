@@ -9,7 +9,7 @@ from pathlib import Path
 import requests
 
 TEMPLATE_PATH = Path(__file__).parent.parent / "templates" / "index.template.html"
-PLACEHOLDER = "/*__REPO_DATA__*/"
+PLACEHOLDER = "/*__REPO_DATA__STARTJSON*/{}/*__REPO_DATA__ENDJSON*/"
 API_URL = (
     "https://api.github.com/search/repositories"
     "?q=stars:>1&sort=stars&order=desc&per_page=100&page=1"
