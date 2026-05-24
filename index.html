@@ -3,469 +3,1240 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GitHub Top 100 Repositories by Stars</title>
+  <title>GitHub Top 100 — Most Starred Repositories</title>
   <style>
+    /* ── Variables ── */
     :root {
-      --bg: #ffffff;
-      --bg-secondary: #f6f8fa;
-      --text: #1a1a2e;
-      --text-muted: #57606a;
-      --border: #d0d7de;
-      --link: #0969da;
-      --link-hover: #0550ae;
-      --hover-bg: #f0f6ff;
-      --header-bg: #f6f8fa;
-      --sort-arrow: #6e7781;
-      --sort-active: #0969da;
-      --badge-bg: #eaeef2;
-      --badge-text: #24292f;
-      --shadow: 0 1px 3px rgba(0,0,0,.08);
-      --star-color: #bf8700;
-      --fork-color: #0969da;
+      --bg:           #f0f2f5;
+      --bg-card:      #ffffff;
+      --bg-header:    #ffffff;
+      --bg-input:     #f6f8fa;
+      --text:         #1c2128;
+      --text-sub:     #57606a;
+      --text-muted:   #8c959f;
+      --border:       #d0d7de;
+      --border-light: #e8ecf0;
+      --accent:       #2da44e;
+      --accent-hover: #218a3e;
+      --blue:         #0969da;
+      --blue-light:   #ddf4ff;
+      --purple:       #8250df;
+      --star:         #d4a017;
+      --star-bg:      #fff8e1;
+      --fork:         #0969da;
+      --fork-bg:      #ddf4ff;
+      --red:          #cf222e;
+      --shadow-sm:    0 1px 3px rgba(31,35,40,.08), 0 0 0 1px rgba(31,35,40,.04);
+      --shadow-md:    0 3px 12px rgba(31,35,40,.12), 0 0 0 1px rgba(31,35,40,.04);
+      --shadow-lg:    0 8px 24px rgba(31,35,40,.12);
+      --radius:       10px;
+      --radius-sm:    6px;
+      --radius-pill:  100px;
+      --transition:   .18s cubic-bezier(.4,0,.2,1);
+
+      /* medal colours */
+      --gold:   #f0a800;
+      --silver: #9ca3af;
+      --bronze: #cd7f32;
     }
+
     [data-theme="dark"] {
-      --bg: #0d1117;
-      --bg-secondary: #161b22;
-      --text: #e6edf3;
-      --text-muted: #8b949e;
-      --border: #30363d;
-      --link: #58a6ff;
-      --link-hover: #79c0ff;
-      --hover-bg: #1c2128;
-      --header-bg: #161b22;
-      --sort-arrow: #6e7781;
-      --sort-active: #58a6ff;
-      --badge-bg: #21262d;
-      --badge-text: #e6edf3;
-      --shadow: 0 1px 3px rgba(0,0,0,.3);
-      --star-color: #d29922;
-      --fork-color: #58a6ff;
+      --bg:           #010409;
+      --bg-card:      #0d1117;
+      --bg-header:    #161b22;
+      --bg-input:     #21262d;
+      --text:         #e6edf3;
+      --text-sub:     #8b949e;
+      --text-muted:   #6e7681;
+      --border:       #30363d;
+      --border-light: #21262d;
+      --accent:       #3fb950;
+      --accent-hover: #52c96a;
+      --blue:         #58a6ff;
+      --blue-light:   #0d1f2d;
+      --purple:       #bc8cff;
+      --star:         #e3b341;
+      --star-bg:      #1c1a0a;
+      --fork:         #58a6ff;
+      --fork-bg:      #0d1f2d;
+      --shadow-sm:    0 1px 3px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.03);
+      --shadow-md:    0 3px 12px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.03);
+      --shadow-lg:    0 8px 24px rgba(0,0,0,.6);
     }
 
+    /* ── Reset ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+    html { scroll-behavior: smooth; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
       font-size: 14px;
-      line-height: 1.5;
+      line-height: 1.6;
       min-height: 100vh;
-      transition: background .2s, color .2s;
+      transition: background var(--transition), color var(--transition);
     }
 
-    header {
-      background: var(--header-bg);
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+    /* ── Top nav ── */
+    .top-nav {
+      background: var(--bg-header);
       border-bottom: 1px solid var(--border);
-      padding: 16px 24px;
+      padding: 0 24px;
       position: sticky;
       top: 0;
-      z-index: 100;
-      box-shadow: var(--shadow);
+      z-index: 200;
+      box-shadow: var(--shadow-sm);
+      transition: background var(--transition);
     }
-
-    .header-top {
+    .nav-inner {
+      max-width: 1400px;
+      margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 10px;
+      height: 56px;
+      gap: 16px;
     }
-
-    h1 {
-      font-size: 20px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    h1 svg { flex-shrink: 0; }
-
-    .controls {
+    .brand {
       display: flex;
       align-items: center;
       gap: 10px;
-      flex-wrap: wrap;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 16px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .brand svg { color: var(--text); flex-shrink: 0; }
+    .brand-badge {
+      background: var(--accent);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: var(--radius-pill);
+      letter-spacing: .05em;
     }
 
+    .nav-search-wrap {
+      flex: 1;
+      max-width: 420px;
+      position: relative;
+    }
+    .nav-search-wrap svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
     #search {
-      background: var(--bg);
+      width: 100%;
+      background: var(--bg-input);
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       color: var(--text);
       font-size: 13px;
-      padding: 5px 10px;
-      width: 220px;
+      padding: 7px 10px 7px 34px;
       outline: none;
-      transition: border-color .15s, box-shadow .15s;
+      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
     }
     #search:focus {
-      border-color: var(--sort-active);
-      box-shadow: 0 0 0 3px rgba(9, 105, 218, .15);
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(9,105,218,.15);
+      background: var(--bg-card);
     }
-    [data-theme="dark"] #search:focus {
-      box-shadow: 0 0 0 3px rgba(88, 166, 255, .15);
-    }
+    [data-theme="dark"] #search:focus { box-shadow: 0 0 0 3px rgba(88,166,255,.15); }
     #search::placeholder { color: var(--text-muted); }
-
-    #theme-toggle {
-      background: var(--badge-bg);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text);
+    .search-clear {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
       cursor: pointer;
-      font-size: 13px;
-      padding: 5px 12px;
-      transition: background .15s;
-    }
-    #theme-toggle:hover { background: var(--hover-bg); }
-
-    .meta {
-      font-size: 12px;
       color: var(--text-muted);
-      display: flex;
+      padding: 2px;
+      border-radius: 50%;
+      display: none;
       align-items: center;
+      justify-content: center;
+      transition: color var(--transition);
+    }
+    .search-clear:hover { color: var(--text); }
+    .search-clear.visible { display: flex; }
+
+    .nav-actions { display: flex; align-items: center; gap: 8px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 12px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg-input);
+      color: var(--text);
+      transition: background var(--transition), border-color var(--transition), color var(--transition);
+      white-space: nowrap;
+    }
+    .btn:hover { background: var(--bg-card); border-color: var(--text-muted); }
+    .btn-icon { padding: 6px 8px; }
+    .btn-accent {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .btn-accent:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: #fff; }
+
+    /* ── Hero Stats Bar ── */
+    .hero {
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+      padding: 32px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(45,164,78,.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    [data-theme="light"] .hero {
+      background: linear-gradient(135deg, #0d1117 0%, #1a2332 50%, #0d1117 100%);
+    }
+    .hero-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #e6edf3;
+      margin-bottom: 6px;
+      letter-spacing: -.02em;
+    }
+    .hero-title span { color: var(--accent); }
+    .hero-sub {
+      font-size: 14px;
+      color: #8b949e;
+      margin-bottom: 24px;
+    }
+    .stats-grid {
+      display: flex;
+      justify-content: center;
       gap: 16px;
       flex-wrap: wrap;
+      max-width: 800px;
+      margin: 0 auto;
     }
-    #result-count { font-weight: 500; }
+    .stat-card {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      min-width: 130px;
+      backdrop-filter: blur(8px);
+      transition: background var(--transition), transform var(--transition);
+    }
+    .stat-card:hover { background: rgba(255,255,255,.1); transform: translateY(-2px); }
+    .stat-card-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #e6edf3;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-card-label {
+      font-size: 11px;
+      color: #8b949e;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
 
-    main { padding: 16px 24px 40px; }
-
-    .table-wrapper {
-      overflow-x: auto;
+    /* ── Filter bar ── */
+    .filter-bar {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      transition: background var(--transition);
+    }
+    .filter-bar-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .filter-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      white-space: nowrap;
+    }
+    .lang-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+    .lang-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 500;
       border: 1px solid var(--border);
-      border-radius: 8px;
-      box-shadow: var(--shadow);
+      background: var(--bg-input);
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: all var(--transition);
+      white-space: nowrap;
     }
+    .lang-pill:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+    .lang-pill.active { border-color: var(--blue); color: var(--blue); background: var(--blue-light); font-weight: 600; }
+    .lang-pill .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .lang-count {
+      font-size: 10px;
+      background: var(--border);
+      border-radius: var(--radius-pill);
+      padding: 0 5px;
+      color: var(--text-muted);
+    }
+    .lang-pill.active .lang-count { background: rgba(9,105,218,.2); color: var(--blue); }
+
+    .view-toggle { display: flex; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+    .view-btn {
+      background: var(--bg-input);
+      border: none;
+      cursor: pointer;
+      padding: 5px 9px;
+      color: var(--text-muted);
+      transition: all var(--transition);
+      display: flex; align-items: center;
+    }
+    .view-btn:hover { background: var(--bg-card); color: var(--text); }
+    .view-btn.active { background: var(--blue); color: #fff; }
+
+    /* ── Main content ── */
+    .main-wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px 24px 60px;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .toolbar-left { display: flex; align-items: center; gap: 10px; }
+    .result-info { font-size: 13px; color: var(--text-sub); }
+    .result-info strong { color: var(--text); }
+    .updated-info { font-size: 12px; color: var(--text-muted); }
+
+    /* ── Table view ── */
+    .table-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: background var(--transition);
+    }
+    .table-scroll { overflow-x: auto; }
 
     table {
       border-collapse: collapse;
       width: 100%;
-      min-width: 640px;
+      min-width: 700px;
     }
 
-    thead { background: var(--header-bg); }
-
+    thead { background: var(--bg-input); }
     th {
-      padding: 10px 12px;
+      padding: 10px 14px;
       text-align: left;
-      font-weight: 600;
-      font-size: 12px;
+      font-size: 11px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: .04em;
+      letter-spacing: .06em;
       color: var(--text-muted);
       border-bottom: 1px solid var(--border);
       white-space: nowrap;
       user-select: none;
-      position: sticky;
-      top: 0;
-      background: var(--header-bg);
+      transition: color var(--transition);
     }
-    th[data-col] {
+    th[data-col] { cursor: pointer; }
+    th[data-col]:hover { color: var(--text); }
+    th[data-col]::after { content: " ⇅"; font-size: 10px; opacity: .5; }
+    th[data-col].sort-asc::after { content: " ↑"; opacity: 1; color: var(--blue); }
+    th[data-col].sort-desc::after { content: " ↓"; opacity: 1; color: var(--blue); }
+    th[data-col].sort-asc, th[data-col].sort-desc { color: var(--blue); }
+    th.th-center { text-align: center; }
+    th.th-right { text-align: right; }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border-light);
+      transition: background var(--transition);
       cursor: pointer;
     }
-    th[data-col]:hover { color: var(--text); }
-    th[data-col]::after {
-      content: " ⇅";
-      color: var(--sort-arrow);
-      font-size: 11px;
-    }
-    th[data-col].sort-asc::after { content: " ↑"; color: var(--sort-active); }
-    th[data-col].sort-desc::after { content: " ↓"; color: var(--sort-active); }
-    th[data-col].sort-asc,
-    th[data-col].sort-desc { color: var(--sort-active); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--bg); }
+    tbody tr.expanded { background: var(--bg); }
 
     td {
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--border);
+      padding: 11px 14px;
       vertical-align: middle;
+      font-size: 13.5px;
     }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: var(--hover-bg); }
+    td.td-center { text-align: center; }
+    td.td-right { text-align: right; }
 
-    .col-rank { width: 52px; text-align: center; color: var(--text-muted); font-weight: 600; }
-    .col-name { width: 18%; }
-    .col-desc { }
-    .col-stars { width: 96px; text-align: right; }
-    .col-forks { width: 80px; text-align: right; }
-    .col-lang { width: 100px; }
-    .col-updated { width: 110px; white-space: nowrap; }
+    /* Rank cell */
+    .rank-cell { font-weight: 700; font-size: 13px; }
+    .rank-medal { font-size: 18px; line-height: 1; }
 
+    /* Repo name cell */
+    .repo-name-cell { display: flex; flex-direction: column; gap: 2px; }
     .repo-link {
-      color: var(--link);
+      color: var(--blue);
       text-decoration: none;
       font-weight: 600;
-      word-break: break-word;
+      font-size: 14px;
+      transition: color var(--transition);
     }
-    .repo-link:hover { color: var(--link-hover); text-decoration: underline; }
+    .repo-link:hover { color: var(--accent); text-decoration: underline; }
+    .repo-owner { font-size: 12px; color: var(--text-muted); }
+    .repo-owner b { color: var(--text-sub); }
 
-    .desc-cell {
-      color: var(--text-muted);
+    /* Description */
+    .desc-text {
+      color: var(--text-sub);
       font-size: 13px;
-      max-width: 340px;
+      max-width: 360px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    .stat { display: inline-flex; align-items: center; gap: 4px; font-variant-numeric: tabular-nums; }
-    .stars { color: var(--star-color); }
-    .forks { color: var(--fork-color); }
-
-    .lang-badge {
-      display: inline-block;
-      background: var(--badge-bg);
-      color: var(--badge-text);
-      border-radius: 20px;
-      font-size: 11px;
-      padding: 2px 8px;
+    /* Stats */
+    .stat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12.5px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
       white-space: nowrap;
     }
+    .stat-stars { background: var(--star-bg); color: var(--star); }
+    .stat-forks { background: var(--fork-bg); color: var(--fork); }
 
-    .no-results {
-      text-align: center;
-      padding: 48px 24px;
-      color: var(--text-muted);
-      font-size: 15px;
+    /* Star bar */
+    .star-bar-wrap { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+    .star-bar-bg {
+      width: 60px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .star-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--star));
+      border-radius: 99px;
+      transition: width .6s cubic-bezier(.4,0,.2,1);
     }
 
-    footer {
-      text-align: center;
-      padding: 16px;
-      color: var(--text-muted);
+    /* Language */
+    .lang-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
       font-size: 12px;
-      border-top: 1px solid var(--border);
-      margin-top: 8px;
+      color: var(--text-sub);
+      font-weight: 500;
     }
-    footer a { color: var(--link); text-decoration: none; }
+    .lang-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Trending badge */
+    .trending-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+      color: #fff;
+      letter-spacing: .04em;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+
+    /* Expanded row detail */
+    .expand-row td { padding: 0; }
+    .expand-content {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border-light);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      background: var(--bg);
+      animation: slideDown .2s ease;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .expand-stat { display: flex; flex-direction: column; gap: 2px; }
+    .expand-stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; }
+    .expand-stat-value { font-size: 15px; font-weight: 700; color: var(--text); }
+    .expand-actions { grid-column: 1/-1; display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+    .expand-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      transition: all var(--transition);
+    }
+    .expand-link:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+    .expand-link.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .expand-link.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+    /* ── Card view ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 14px;
+    }
+    .repo-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition), background var(--transition);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .repo-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--blue));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--transition);
+    }
+    .repo-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--blue); }
+    .repo-card:hover::before { transform: scaleX(1); }
+    .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; gap: 8px; }
+    .card-rank {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+    }
+    .card-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--blue);
+      text-decoration: none;
+      display: block;
+      margin-bottom: 4px;
+      transition: color var(--transition);
+    }
+    .card-name:hover { color: var(--accent); }
+    .card-desc {
+      font-size: 12.5px;
+      color: var(--text-sub);
+      line-height: 1.5;
+      margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 38px;
+    }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    .card-stats { display: flex; gap: 10px; }
+    .card-stat {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-sub);
+      font-variant-numeric: tabular-nums;
+    }
+    .card-stat.s { color: var(--star); }
+    .card-stat.f { color: var(--fork); }
+
+    /* ── Empty / No results ── */
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--text-muted);
+    }
+    .empty-state svg { margin-bottom: 12px; opacity: .4; }
+    .empty-state h3 { font-size: 16px; margin-bottom: 6px; color: var(--text-sub); }
+    .empty-state p { font-size: 13px; }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--text);
+      color: var(--bg);
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      z-index: 999;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: transform .3s cubic-bezier(.4,0,.2,1), opacity .3s;
+      pointer-events: none;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── Back to top ── */
+    #back-top {
+      position: fixed;
+      bottom: 24px;
+      right: 80px;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-sub);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow-md);
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity .3s, transform .3s, background var(--transition);
+      pointer-events: none;
+    }
+    #back-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    #back-top:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--bg-header);
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      transition: background var(--transition);
+    }
+    footer a { color: var(--blue); text-decoration: none; }
     footer a:hover { text-decoration: underline; }
 
+    /* ── Skeleton loader ── */
+    .skeleton { animation: shimmer 1.4s infinite linear; }
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .hero-title { font-size: 22px; }
+      .stats-grid { gap: 10px; }
+      .stat-card { min-width: 100px; padding: 10px 14px; }
+    }
     @media (max-width: 768px) {
-      header { padding: 12px 16px; }
-      main { padding: 12px 16px 32px; }
-      .col-desc, .col-updated { display: none; }
-      #search { width: 160px; }
+      .top-nav { padding: 0 16px; }
+      .nav-inner { height: 52px; }
+      .brand span.brand-text { display: none; }
+      .hero { padding: 24px 16px; }
+      .filter-bar { padding: 10px 16px; }
+      .main-wrap { padding: 16px 16px 48px; }
+      .col-desc, .col-updated, .col-forks, .expand-col { display: none; }
+      .star-bar-bg { display: none; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .expand-content { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .stats-grid { display: grid; grid-template-columns: 1fr 1fr; }
+      .nav-search-wrap { max-width: 100%; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="header-top">
-      <h1>
-        <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+
+  <!-- ── Top Nav ── -->
+  <nav class="top-nav">
+    <div class="nav-inner">
+      <a class="brand" href="#">
+        <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor">
           <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
         </svg>
-        GitHub Top 100 Repositories
-      </h1>
-      <div class="controls">
-        <input id="search" type="search" placeholder="Search repos…" autocomplete="off" spellcheck="false">
-        <button id="theme-toggle" aria-label="Toggle color theme">🌙 Dark</button>
+        <span class="brand-text">GitHub Top 100</span>
+        <span class="brand-badge">LIVE</span>
+      </a>
+
+      <div class="nav-search-wrap">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.749.749 0 0 1-.326 1.269.749.749 0 0 1-.734-.21ZM11.5 7a4.499 4.499 0 1 0-8.997 0A4.499 4.499 0 0 0 11.5 7Z"/>
+        </svg>
+        <input id="search" type="search" placeholder="Search by name, description, language…" autocomplete="off" spellcheck="false">
+        <button class="search-clear" id="search-clear" title="Clear search" aria-label="Clear search">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"/></svg>
+        </button>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn" id="theme-toggle" title="Toggle theme">
+          <svg id="theme-icon" width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M9.598 1.591a.749.749 0 0 1 .785-.175 7 7 0 1 1-8.967 8.967.75.75 0 0 1 .961-.96 5.5 5.5 0 0 0 7.046-7.046.75.75 0 0 1 .175-.786Zm1.616 1.945a7 7 0 0 1-7.678 7.678 5.499 5.499 0 1 0 7.678-7.678Z"/>
+          </svg>
+          <span id="theme-label">Dark</span>
+        </button>
+        <button class="btn btn-icon" id="share-btn" title="Copy link">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25Zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0Z"/>
+          </svg>
+        </button>
       </div>
     </div>
-    <div class="meta">
-      <span id="result-count"></span>
-      <span id="last-updated"></span>
-    </div>
-  </header>
+  </nav>
 
-  <main>
-    <div class="table-wrapper">
-      <table id="repo-table" aria-label="Top GitHub repositories by stars">
-        <thead>
-          <tr>
-            <th class="col-rank" data-col="rank">#</th>
-            <th class="col-name" data-col="full_name">Repository</th>
-            <th class="col-desc">Description</th>
-            <th class="col-stars" data-col="stargazers_count">Stars</th>
-            <th class="col-forks" data-col="forks_count">Forks</th>
-            <th class="col-lang" data-col="language">Language</th>
-            <th class="col-updated" data-col="pushed_at">Last Push</th>
-          </tr>
-        </thead>
-        <tbody id="repo-body"></tbody>
-      </table>
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <h1 class="hero-title">Most Starred <span>GitHub Repos</span></h1>
+    <p class="hero-sub">Real-time rankings updated daily · Ranked by total star count</p>
+    <div class="stats-grid" id="hero-stats">
+      <div class="stat-card">
+        <div class="stat-card-value" id="stat-total-stars">—</div>
+        <div class="stat-card-label">Total Stars</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-value" id="stat-top-stars">—</div>
+        <div class="stat-card-label">#1 Repo Stars</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-value" id="stat-languages">—</div>
+        <div class="stat-card-label">Languages</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-value" id="stat-total-forks">—</div>
+        <div class="stat-card-label">Total Forks</div>
+      </div>
     </div>
-  </main>
+  </section>
+
+  <!-- ── Filter Bar ── -->
+  <div class="filter-bar">
+    <div class="filter-bar-inner">
+      <span class="filter-label">Language</span>
+      <div class="lang-pills" id="lang-pills"></div>
+      <div class="view-toggle">
+        <button class="view-btn active" id="view-table" title="Table view">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M0 2.75C0 1.784.784 1 1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25Zm1.75-.25a.25.25 0 0 0-.25.25v1.5h13V2.75a.25.25 0 0 0-.25-.25Zm12.75 3.5H8.75v3h5.75Zm0 4.5H8.75v3h5.25a.25.25 0 0 0 .25-.25Zm-7.25 3v-3H1.5v2.75c0 .138.112.25.25.25Zm-5.75-4.5H7.25v-3H1.5Z"/></svg>
+        </button>
+        <button class="view-btn" id="view-cards" title="Card view">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M1 2.75C1 1.784 1.784 1 2.75 1h2.5C6.216 1 7 1.784 7 2.75v2.5C7 6.216 6.216 7 5.25 7h-2.5C1.784 7 1 6.216 1 5.25Zm8 0C9 1.784 9.784 1 10.75 1h2.5C14.216 1 15 1.784 15 2.75v2.5C15 6.216 14.216 7 13.25 7h-2.5C9.784 7 9 6.216 9 5.25Zm-8 8C1 9.784 1.784 9 2.75 9h2.5C6.216 9 7 9.784 7 10.75v2.5C7 13.216 6.216 14 5.25 14h-2.5C1.784 14 1 13.216 1 13.25Zm8 0C9 9.784 9.784 9 10.75 9h2.5C14.216 9 15 9.784 15 10.75v2.5C15 13.216 14.216 14 13.25 14h-2.5C9.784 14 9 13.216 9 13.25Z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Main ── -->
+  <div class="main-wrap">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <span class="result-info" id="result-info">Loading…</span>
+      </div>
+      <span class="updated-info" id="updated-info"></span>
+    </div>
+
+    <!-- Table -->
+    <div id="table-view">
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table aria-label="Top GitHub repositories by stars">
+            <thead>
+              <tr>
+                <th class="th-center" data-col="rank" style="width:54px">#</th>
+                <th data-col="full_name" style="width:22%">Repository</th>
+                <th class="col-desc">Description</th>
+                <th class="th-right" data-col="stargazers_count" style="width:130px">Stars</th>
+                <th class="th-right col-forks" data-col="forks_count" style="width:90px">Forks</th>
+                <th data-col="language" style="width:110px">Language</th>
+                <th class="col-updated" data-col="pushed_at" style="width:100px">Last Push</th>
+              </tr>
+            </thead>
+            <tbody id="repo-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div id="cards-view" style="display:none">
+      <div class="cards-grid" id="cards-body"></div>
+    </div>
+
+    <!-- Empty state -->
+    <div id="empty-state" class="empty-state" style="display:none">
+      <svg width="48" height="48" viewBox="0 0 16 16" fill="currentColor"><path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.749.749 0 0 1-.326 1.269.749.749 0 0 1-.734-.21ZM11.5 7a4.499 4.499 0 1 0-8.997 0A4.499 4.499 0 0 0 11.5 7Z"/></svg>
+      <h3>No repositories found</h3>
+      <p>Try a different search term or clear the language filter.</p>
+    </div>
+  </div>
 
   <footer>
-    Data sourced from the <a href="https://docs.github.com/en/rest" target="_blank" rel="noopener">GitHub REST API</a>.
-    Updates every day at 02:00 UTC via GitHub Actions.
+    Data from the <a href="https://docs.github.com/en/rest" target="_blank" rel="noopener">GitHub REST API</a> &middot;
+    Auto-updated daily at 02:00 UTC via GitHub Actions &middot;
+    <a href="https://github.com/skalmodiya/github-top100" target="_blank" rel="noopener">View source</a>
   </footer>
 
+  <div id="toast" role="status" aria-live="polite"></div>
+  <button id="back-top" title="Back to top" aria-label="Back to top">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M7.78 1.97a.75.75 0 0 0-1.06 0L3.47 5.22a.75.75 0 0 0 1.06 1.06l2.22-2.22V14.5a.75.75 0 0 0 1.5 0V4.06l2.22 2.22a.75.75 0 1 0 1.06-1.06L7.78 1.97Z"/></svg>
+  </button>
+
   <script>
-    const REPO_DATA = {"generated_at": "2026-05-24T12:29:04Z", "items": [{"rank": 1, "full_name": "codecrafters-io/build-your-own-x", "html_url": "https://github.com/codecrafters-io/build-your-own-x", "description": "Master programming by recreating your favorite technologies from scratch.", "stargazers_count": 503968, "forks_count": 47813, "language": "Markdown", "pushed_at": "2026-02-21T09:34:54Z"}, {"rank": 2, "full_name": "sindresorhus/awesome", "html_url": "https://github.com/sindresorhus/awesome", "description": "😎 Awesome lists about all kinds of interesting topics", "stargazers_count": 469572, "forks_count": 35152, "language": "", "pushed_at": "2026-05-05T14:47:44Z"}, {"rank": 3, "full_name": "freeCodeCamp/freeCodeCamp", "html_url": "https://github.com/freeCodeCamp/freeCodeCamp", "description": "freeCodeCamp.org's open-source codebase and curriculum. Learn math, programming, and computer science for free.", "stargazers_count": 445362, "forks_count": 44689, "language": "TypeScript", "pushed_at": "2026-05-24T12:09:04Z"}, {"rank": 4, "full_name": "public-apis/public-apis", "html_url": "https://github.com/public-apis/public-apis", "description": "A collective list of free APIs", "stargazers_count": 436905, "forks_count": 47886, "language": "Python", "pushed_at": "2026-05-15T15:50:51Z"}, {"rank": 5, "full_name": "EbookFoundation/free-programming-books", "html_url": "https://github.com/EbookFoundation/free-programming-books", "description": ":books: Freely available programming books", "stargazers_count": 388874, "forks_count": 66346, "language": "Python", "pushed_at": "2026-05-19T12:29:12Z"}, {"rank": 6, "full_name": "openclaw/openclaw", "html_url": "https://github.com/openclaw/openclaw", "description": "Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞 ", "stargazers_count": 374306, "forks_count": 77849, "language": "TypeScript", "pushed_at": "2026-05-24T12:28:33Z"}, {"rank": 7, "full_name": "nilbuild/developer-roadmap", "html_url": "https://github.com/nilbuild/developer-roadmap", "description": "Interactive roadmaps, guides and other educational content to help developers grow in their careers.", "stargazers_count": 355359, "forks_count": 44103, "language": "TypeScript", "pushed_at": "2026-05-22T13:03:50Z"}, {"rank": 8, "full_name": "donnemartin/system-design-primer", "html_url": "https://github.com/donnemartin/system-design-primer", "description": "Learn how to design large-scale systems. Prep for the system design interview.  Includes Anki flashcards.", "stargazers_count": 350036, "forks_count": 56389, "language": "Python", "pushed_at": "2026-03-20T01:52:19Z"}, {"rank": 9, "full_name": "jwasham/coding-interview-university", "html_url": "https://github.com/jwasham/coding-interview-university", "description": "A complete computer science study plan to become a software engineer.", "stargazers_count": 347334, "forks_count": 82966, "language": "", "pushed_at": "2025-08-28T14:42:47Z"}, {"rank": 10, "full_name": "vinta/awesome-python", "html_url": "https://github.com/vinta/awesome-python", "description": "An opinionated list of Python frameworks, libraries, tools, and resources", "stargazers_count": 299336, "forks_count": 27963, "language": "Python", "pushed_at": "2026-05-24T07:25:04Z"}, {"rank": 11, "full_name": "awesome-selfhosted/awesome-selfhosted", "html_url": "https://github.com/awesome-selfhosted/awesome-selfhosted", "description": "A list of Free Software network services and web applications which can be hosted on your own servers", "stargazers_count": 294918, "forks_count": 13694, "language": "", "pushed_at": "2026-05-24T06:54:20Z"}, {"rank": 12, "full_name": "996icu/996.ICU", "html_url": "https://github.com/996icu/996.ICU", "description": "Repo for counting stars and contributing. Press F to pay respect to glorious developers.", "stargazers_count": 276235, "forks_count": 20859, "language": "", "pushed_at": "2025-08-22T06:01:29Z"}, {"rank": 13, "full_name": "practical-tutorials/project-based-learning", "html_url": "https://github.com/practical-tutorials/project-based-learning", "description": "Curated list of project-based tutorials", "stargazers_count": 266484, "forks_count": 34642, "language": "", "pushed_at": "2024-08-15T05:33:54Z"}, {"rank": 14, "full_name": "facebook/react", "html_url": "https://github.com/facebook/react", "description": "The library for web and native user interfaces.", "stargazers_count": 245234, "forks_count": 51098, "language": "JavaScript", "pushed_at": "2026-05-23T07:19:16Z"}, {"rank": 15, "full_name": "torvalds/linux", "html_url": "https://github.com/torvalds/linux", "description": "Linux kernel source tree", "stargazers_count": 234256, "forks_count": 62483, "language": "C", "pushed_at": "2026-05-24T00:07:28Z"}, {"rank": 16, "full_name": "trimstray/the-book-of-secret-knowledge", "html_url": "https://github.com/trimstray/the-book-of-secret-knowledge", "description": "A collection of inspiring lists, manuals, cheatsheets, blogs, hacks, one-liners, cli/web tools and more.", "stargazers_count": 224119, "forks_count": 13443, "language": "", "pushed_at": "2024-11-19T14:00:38Z"}, {"rank": 17, "full_name": "TheAlgorithms/Python", "html_url": "https://github.com/TheAlgorithms/Python", "description": "All Algorithms implemented in Python", "stargazers_count": 221357, "forks_count": 50671, "language": "Python", "pushed_at": "2026-05-22T11:51:35Z"}, {"rank": 18, "full_name": "vuejs/vue", "html_url": "https://github.com/vuejs/vue", "description": "This is the repo for Vue 2. For Vue 3, go to https://github.com/vuejs/core", "stargazers_count": 209802, "forks_count": 33872, "language": "TypeScript", "pushed_at": "2024-10-10T07:24:15Z"}, {"rank": 19, "full_name": "obra/superpowers", "html_url": "https://github.com/obra/superpowers", "description": "An agentic skills framework & software development methodology that works.", "stargazers_count": 204512, "forks_count": 18211, "language": "Shell", "pushed_at": "2026-05-24T00:01:48Z"}, {"rank": 20, "full_name": "ossu/computer-science", "html_url": "https://github.com/ossu/computer-science", "description": "🎓 Path to a free self-taught education in Computer Science!", "stargazers_count": 204133, "forks_count": 25402, "language": "HTML", "pushed_at": "2026-04-21T04:43:27Z"}, {"rank": 21, "full_name": "trekhleb/javascript-algorithms", "html_url": "https://github.com/trekhleb/javascript-algorithms", "description": "📝 Algorithms and data structures implemented in JavaScript with explanations and links to further readings", "stargazers_count": 196000, "forks_count": 31069, "language": "JavaScript", "pushed_at": "2026-05-20T15:01:08Z"}, {"rank": 22, "full_name": "tensorflow/tensorflow", "html_url": "https://github.com/tensorflow/tensorflow", "description": "An Open Source Machine Learning Framework for Everyone", "stargazers_count": 195253, "forks_count": 75329, "language": "C++", "pushed_at": "2026-05-24T08:24:24Z"}, {"rank": 23, "full_name": "ultraworkers/claw-code", "html_url": "https://github.com/ultraworkers/claw-code", "description": "The repo is finally unlocked. enjoy the party! The fastest repo in history to surpass 100K stars ⭐. Join Discord: https://discord.gg/5TUQKqFWd Built in Rust using oh-my-codex.", "stargazers_count": 192351, "forks_count": 109960, "language": "Rust", "pushed_at": "2026-05-24T12:03:50Z"}, {"rank": 24, "full_name": "affaan-m/ECC", "html_url": "https://github.com/affaan-m/ECC", "description": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.", "stargazers_count": 189780, "forks_count": 29355, "language": "JavaScript", "pushed_at": "2026-05-24T04:53:35Z"}, {"rank": 25, "full_name": "n8n-io/n8n", "html_url": "https://github.com/n8n-io/n8n", "description": "Fair-code workflow automation platform with native AI capabilities. Combine visual building with custom code, self-host or cloud, 400+ integrations.", "stargazers_count": 189484, "forks_count": 57961, "language": "TypeScript", "pushed_at": "2026-05-24T12:22:24Z"}, {"rank": 26, "full_name": "ohmyzsh/ohmyzsh", "html_url": "https://github.com/ohmyzsh/ohmyzsh", "description": "🙃   A delightful community-driven (with 2,500+ contributors) framework for managing your zsh configuration. Includes 300+ optional plugins (rails, git, macOS, hub, docker, homebrew, node, php, python, etc), 140+ themes to spice up your morning, and an auto-update tool that makes it easy to keep up with the latest updates from the community.", "stargazers_count": 187207, "forks_count": 26373, "language": "Shell", "pushed_at": "2026-05-24T07:16:14Z"}, {"rank": 27, "full_name": "microsoft/vscode", "html_url": "https://github.com/microsoft/vscode", "description": "Visual Studio Code", "stargazers_count": 185294, "forks_count": 40092, "language": "TypeScript", "pushed_at": "2026-05-24T06:42:23Z"}, {"rank": 28, "full_name": "Significant-Gravitas/AutoGPT", "html_url": "https://github.com/Significant-Gravitas/AutoGPT", "description": "AutoGPT is the vision of accessible AI for everyone, to use and to build on. Our mission is to provide the tools, so that you can focus on what matters.", "stargazers_count": 184500, "forks_count": 46226, "language": "Python", "pushed_at": "2026-05-24T05:21:07Z"}, {"rank": 29, "full_name": "getify/You-Dont-Know-JS", "html_url": "https://github.com/getify/You-Dont-Know-JS", "description": "A book series (2 published editions) on the JS language.", "stargazers_count": 184467, "forks_count": 33553, "language": "", "pushed_at": "2026-02-15T04:36:44Z"}, {"rank": 30, "full_name": "CyC2018/CS-Notes", "html_url": "https://github.com/CyC2018/CS-Notes", "description": ":books: 技术面试必备基础知识、Leetcode、计算机操作系统、计算机网络、系统设计", "stargazers_count": 184409, "forks_count": 50969, "language": "", "pushed_at": "2024-08-21T09:40:10Z"}, {"rank": 31, "full_name": "jackfrued/Python-100-Days", "html_url": "https://github.com/jackfrued/Python-100-Days", "description": "Python - 100天从新手到大师", "stargazers_count": 182734, "forks_count": 55700, "language": "Jupyter Notebook", "pushed_at": "2026-04-13T02:42:42Z"}, {"rank": 32, "full_name": "flutter/flutter", "html_url": "https://github.com/flutter/flutter", "description": "Flutter makes it easy and fast to build beautiful apps for mobile and beyond", "stargazers_count": 176442, "forks_count": 30398, "language": "Dart", "pushed_at": "2026-05-23T15:13:28Z"}, {"rank": 33, "full_name": "massgravel/Microsoft-Activation-Scripts", "html_url": "https://github.com/massgravel/Microsoft-Activation-Scripts", "description": "Open-source Windows and Office activator featuring HWID, Ohook, TSforge, and Online KMS activation methods, along with advanced troubleshooting.", "stargazers_count": 176204, "forks_count": 16928, "language": "Batchfile", "pushed_at": "2026-05-07T16:42:57Z"}, {"rank": 34, "full_name": "twbs/bootstrap", "html_url": "https://github.com/twbs/bootstrap", "description": "The most popular HTML, CSS, and JavaScript framework for developing responsive, mobile first projects on the web.", "stargazers_count": 174266, "forks_count": 78874, "language": "MDX", "pushed_at": "2026-05-24T08:51:43Z"}, {"rank": 35, "full_name": "github/gitignore", "html_url": "https://github.com/github/gitignore", "description": "A collection of useful .gitignore templates", "stargazers_count": 174071, "forks_count": 82493, "language": "", "pushed_at": "2026-05-21T23:49:32Z"}, {"rank": 36, "full_name": "avelino/awesome-go", "html_url": "https://github.com/avelino/awesome-go", "description": "A curated list of awesome Go frameworks, libraries and software", "stargazers_count": 173507, "forks_count": 13245, "language": "Go", "pushed_at": "2026-05-24T09:32:14Z"}, {"rank": 37, "full_name": "ollama/ollama", "html_url": "https://github.com/ollama/ollama", "description": "Get up and running with Kimi-K2.5, GLM-5, MiniMax, DeepSeek, gpt-oss, Qwen, Gemma and other models.", "stargazers_count": 172161, "forks_count": 16273, "language": "Go", "pushed_at": "2026-05-22T16:47:04Z"}, {"rank": 38, "full_name": "yt-dlp/yt-dlp", "html_url": "https://github.com/yt-dlp/yt-dlp", "description": "A feature-rich command-line audio/video downloader", "stargazers_count": 165219, "forks_count": 13876, "language": "Python", "pushed_at": "2026-05-22T17:23:04Z"}, {"rank": 39, "full_name": "NousResearch/hermes-agent", "html_url": "https://github.com/NousResearch/hermes-agent", "description": "The agent that grows with you", "stargazers_count": 165046, "forks_count": 27157, "language": "Python", "pushed_at": "2026-05-24T11:55:20Z"}, {"rank": 40, "full_name": "anomalyco/opencode", "html_url": "https://github.com/anomalyco/opencode", "description": "The open source coding agent.", "stargazers_count": 164605, "forks_count": 19498, "language": "TypeScript", "pushed_at": "2026-05-24T12:11:12Z"}, {"rank": 41, "full_name": "DigitalPlatDev/FreeDomain", "html_url": "https://github.com/DigitalPlatDev/FreeDomain", "description": "DigitalPlat FreeDomain: Free Domain For Everyone", "stargazers_count": 164528, "forks_count": 2890, "language": "HTML", "pushed_at": "2026-04-24T13:50:28Z"}, {"rank": 42, "full_name": "AUTOMATIC1111/stable-diffusion-webui", "html_url": "https://github.com/AUTOMATIC1111/stable-diffusion-webui", "description": "Stable Diffusion web UI", "stargazers_count": 163259, "forks_count": 30360, "language": "Python", "pushed_at": "2026-03-02T07:00:53Z"}, {"rank": 43, "full_name": "f/prompts.chat", "html_url": "https://github.com/f/prompts.chat", "description": "f.k.a. Awesome ChatGPT Prompts. Share, discover, and collect prompts from the community. Free and open source — self-host for your organization with complete privacy.", "stargazers_count": 162749, "forks_count": 21174, "language": "HTML", "pushed_at": "2026-05-24T04:32:05Z"}, {"rank": 44, "full_name": "jlevy/the-art-of-command-line", "html_url": "https://github.com/jlevy/the-art-of-command-line", "description": "Master the command line, in one page", "stargazers_count": 161051, "forks_count": 14814, "language": "", "pushed_at": "2024-06-25T18:13:44Z"}, {"rank": 45, "full_name": "huggingface/transformers", "html_url": "https://github.com/huggingface/transformers", "description": "🤗 Transformers: the model-definition framework for state-of-the-art machine learning models in text, vision, audio, and multimodal models, for both inference and training. ", "stargazers_count": 160922, "forks_count": 33305, "language": "Python", "pushed_at": "2026-05-22T19:58:10Z"}, {"rank": 46, "full_name": "521xueweihan/HelloGitHub", "html_url": "https://github.com/521xueweihan/HelloGitHub", "description": ":octocat: 分享 GitHub 上有趣、入门级的开源项目。Share interesting, entry-level open source projects on GitHub.", "stargazers_count": 158381, "forks_count": 12055, "language": "Python", "pushed_at": "2026-04-28T00:48:03Z"}, {"rank": 47, "full_name": "Snailclimb/JavaGuide", "html_url": "https://github.com/Snailclimb/JavaGuide", "description": "Java 面试 & 后端通用面试指南，覆盖计算机基础、数据库、分布式、高并发、系统设计与 AI 应用开发", "stargazers_count": 155846, "forks_count": 46137, "language": "JavaScript", "pushed_at": "2026-05-22T13:39:41Z"}, {"rank": 48, "full_name": "multica-ai/andrej-karpathy-skills", "html_url": "https://github.com/multica-ai/andrej-karpathy-skills", "description": "A single CLAUDE.md file to improve Claude Code behavior, derived from Andrej Karpathy's observations on LLM coding pitfalls.", "stargazers_count": 150866, "forks_count": 15480, "language": "", "pushed_at": "2026-04-20T10:05:04Z"}, {"rank": 49, "full_name": "langflow-ai/langflow", "html_url": "https://github.com/langflow-ai/langflow", "description": "Langflow is a powerful tool for building and deploying AI-powered agents and workflows.", "stargazers_count": 148704, "forks_count": 9104, "language": "Python", "pushed_at": "2026-05-24T00:58:38Z"}, {"rank": 50, "full_name": "airbnb/javascript", "html_url": "https://github.com/airbnb/javascript", "description": "JavaScript Style Guide", "stargazers_count": 148125, "forks_count": 26673, "language": "JavaScript", "pushed_at": "2026-04-16T19:24:09Z"}, {"rank": 51, "full_name": "langgenius/dify", "html_url": "https://github.com/langgenius/dify", "description": "Production-ready platform for agentic workflow development.", "stargazers_count": 142430, "forks_count": 22407, "language": "TypeScript", "pushed_at": "2026-05-24T11:39:12Z"}, {"rank": 52, "full_name": "Genymobile/scrcpy", "html_url": "https://github.com/Genymobile/scrcpy", "description": "Display and control your Android device", "stargazers_count": 142286, "forks_count": 13125, "language": "C", "pushed_at": "2026-05-24T10:33:55Z"}, {"rank": 53, "full_name": "ytdl-org/youtube-dl", "html_url": "https://github.com/ytdl-org/youtube-dl", "description": "Command-line program to download videos from YouTube.com and other video sites", "stargazers_count": 140358, "forks_count": 10676, "language": "Python", "pushed_at": "2026-02-19T16:45:25Z"}, {"rank": 54, "full_name": "anthropics/skills", "html_url": "https://github.com/anthropics/skills", "description": "Public repository for Agent Skills", "stargazers_count": 139990, "forks_count": 16535, "language": "Python", "pushed_at": "2026-05-19T14:11:10Z"}, {"rank": 55, "full_name": "yangshun/tech-interview-handbook", "html_url": "https://github.com/yangshun/tech-interview-handbook", "description": "Curated coding interview preparation materials for busy software engineers", "stargazers_count": 139693, "forks_count": 16585, "language": "TypeScript", "pushed_at": "2026-04-05T23:58:25Z"}, {"rank": 56, "full_name": "vercel/next.js", "html_url": "https://github.com/vercel/next.js", "description": "The React Framework", "stargazers_count": 139574, "forks_count": 31114, "language": "JavaScript", "pushed_at": "2026-05-24T11:11:18Z"}, {"rank": 57, "full_name": "open-webui/open-webui", "html_url": "https://github.com/open-webui/open-webui", "description": "User-friendly AI Interface (Supports Ollama, OpenAI API, ...)", "stargazers_count": 138419, "forks_count": 19802, "language": "Python", "pushed_at": "2026-05-23T12:34:14Z"}, {"rank": 58, "full_name": "x1xhlol/system-prompts-and-models-of-ai-tools", "html_url": "https://github.com/x1xhlol/system-prompts-and-models-of-ai-tools", "description": "FULL Augment Code, Claude Code, Cluely, CodeBuddy, Comet, Cursor, Devin AI, Junie, Kiro, Leap.new, Lovable, Manus, NotionAI, Orchids.app, Perplexity, Poke, Qoder, Replit, Same.dev, Trae, Traycer AI, VSCode Agent, Warp.dev, Windsurf, Xcode, Z.ai Code, Dia & v0. (And other Open Sourced) System Prompts, Internal Tools & AI Models", "stargazers_count": 138182, "forks_count": 34436, "language": "", "pushed_at": "2026-05-23T11:15:30Z"}, {"rank": 59, "full_name": "langchain-ai/langchain", "html_url": "https://github.com/langchain-ai/langchain", "description": "The agent engineering platform.", "stargazers_count": 137515, "forks_count": 22756, "language": "Python", "pushed_at": "2026-05-23T08:42:49Z"}, {"rank": 60, "full_name": "golang/go", "html_url": "https://github.com/golang/go", "description": "The Go programming language", "stargazers_count": 134042, "forks_count": 19046, "language": "Go", "pushed_at": "2026-05-23T14:39:01Z"}, {"rank": 61, "full_name": "labuladong/fucking-algorithm", "html_url": "https://github.com/labuladong/fucking-algorithm", "description": "Crack LeetCode, not only how, but also why. ", "stargazers_count": 133494, "forks_count": 23608, "language": "Markdown", "pushed_at": "2026-02-28T10:07:31Z"}, {"rank": 62, "full_name": "microsoft/PowerToys", "html_url": "https://github.com/microsoft/PowerToys", "description": "Microsoft PowerToys is a collection of utilities that supercharge productivity and customization on Windows", "stargazers_count": 133437, "forks_count": 8003, "language": "C#", "pushed_at": "2026-05-24T10:08:56Z"}, {"rank": 63, "full_name": "Chalarangelo/30-seconds-of-code", "html_url": "https://github.com/Chalarangelo/30-seconds-of-code", "description": "Coding articles to level up your development skills", "stargazers_count": 127908, "forks_count": 12487, "language": "JavaScript", "pushed_at": "2026-05-13T16:50:23Z"}, {"rank": 64, "full_name": "krahets/hello-algo", "html_url": "https://github.com/krahets/hello-algo", "description": "《Hello 算法》：动画图解、一键运行的数据结构与算法教程。支持简中、繁中、English、日本語，提供 Python, Java, C++, C, C#, JS, Go, Swift, Rust, Ruby, Kotlin, TS, Dart 等代码实现", "stargazers_count": 126349, "forks_count": 15132, "language": "Java", "pushed_at": "2026-04-18T18:23:33Z"}, {"rank": 65, "full_name": "anthropics/claude-code", "html_url": "https://github.com/anthropics/claude-code", "description": "Claude Code is an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster by executing routine tasks, explaining complex code, and handling git workflows - all through natural language commands.", "stargazers_count": 126128, "forks_count": 20704, "language": "Shell", "pushed_at": "2026-05-23T04:03:51Z"}, {"rank": 66, "full_name": "facebook/react-native", "html_url": "https://github.com/facebook/react-native", "description": "A framework for building native applications using React", "stargazers_count": 125891, "forks_count": 25154, "language": "C++", "pushed_at": "2026-05-23T13:30:40Z"}, {"rank": 67, "full_name": "microsoft/markitdown", "html_url": "https://github.com/microsoft/markitdown", "description": "Python tool for converting files and office documents to Markdown.", "stargazers_count": 124904, "forks_count": 8497, "language": "Python", "pushed_at": "2026-05-22T04:59:41Z"}, {"rank": 68, "full_name": "excalidraw/excalidraw", "html_url": "https://github.com/excalidraw/excalidraw", "description": "Virtual whiteboard for sketching hand-drawn like diagrams", "stargazers_count": 123923, "forks_count": 13758, "language": "TypeScript", "pushed_at": "2026-05-24T11:02:34Z"}, {"rank": 69, "full_name": "firecrawl/firecrawl", "html_url": "https://github.com/firecrawl/firecrawl", "description": "🔥 Search, scrape, and clean the web for AI agents.", "stargazers_count": 123598, "forks_count": 7476, "language": "TypeScript", "pushed_at": "2026-05-24T07:14:57Z"}, {"rank": 70, "full_name": "ripienaar/free-for-dev", "html_url": "https://github.com/ripienaar/free-for-dev", "description": "A list of SaaS, PaaS and IaaS offerings that have free tiers of interest to devops and infradev", "stargazers_count": 122583, "forks_count": 12864, "language": "HTML", "pushed_at": "2026-05-19T11:17:17Z"}, {"rank": 71, "full_name": "kubernetes/kubernetes", "html_url": "https://github.com/kubernetes/kubernetes", "description": "Production-Grade Container Scheduling and Management", "stargazers_count": 122438, "forks_count": 43150, "language": "Go", "pushed_at": "2026-05-23T16:26:44Z"}, {"rank": 72, "full_name": "electron/electron", "html_url": "https://github.com/electron/electron", "description": ":electron: Build cross-platform desktop apps with JavaScript, HTML, and CSS", "stargazers_count": 121396, "forks_count": 17204, "language": "C++", "pushed_at": "2026-05-23T20:01:31Z"}, {"rank": 73, "full_name": "clash-verge-rev/clash-verge-rev", "html_url": "https://github.com/clash-verge-rev/clash-verge-rev", "description": "A modern GUI client based on Tauri, designed to run in Windows, macOS and Linux for tailored proxy experience", "stargazers_count": 120486, "forks_count": 8778, "language": "TypeScript", "pushed_at": "2026-05-24T08:45:01Z"}, {"rank": 74, "full_name": "nodejs/node", "html_url": "https://github.com/nodejs/node", "description": "Node.js JavaScript runtime ✨🐢🚀✨", "stargazers_count": 117366, "forks_count": 35616, "language": "JavaScript", "pushed_at": "2026-05-24T07:30:19Z"}, {"rank": 75, "full_name": "justjavac/free-programming-books-zh_CN", "html_url": "https://github.com/justjavac/free-programming-books-zh_CN", "description": ":books: 免费的计算机编程类中文书籍，欢迎投稿", "stargazers_count": 116989, "forks_count": 28296, "language": "", "pushed_at": "2024-07-15T08:55:20Z"}, {"rank": 76, "full_name": "iptv-org/iptv", "html_url": "https://github.com/iptv-org/iptv", "description": "Collection of publicly available IPTV channels from all over the world", "stargazers_count": 116463, "forks_count": 6164, "language": "TypeScript", "pushed_at": "2026-05-24T01:06:43Z"}, {"rank": 77, "full_name": "shadcn-ui/ui", "html_url": "https://github.com/shadcn-ui/ui", "description": "A set of beautifully-designed, accessible components and a code distribution platform. Works with your favorite frameworks. Open Source. Open Code.", "stargazers_count": 114951, "forks_count": 8893, "language": "TypeScript", "pushed_at": "2026-05-23T09:19:33Z"}, {"rank": 78, "full_name": "rustdesk/rustdesk", "html_url": "https://github.com/rustdesk/rustdesk", "description": "An open-source remote desktop application designed for self-hosting, as an alternative to TeamViewer.", "stargazers_count": 114839, "forks_count": 17308, "language": "Rust", "pushed_at": "2026-05-24T11:08:45Z"}, {"rank": 79, "full_name": "Comfy-Org/ComfyUI", "html_url": "https://github.com/Comfy-Org/ComfyUI", "description": "The most powerful and modular diffusion model GUI, api and backend with a graph/nodes interface.", "stargazers_count": 114275, "forks_count": 13375, "language": "Python", "pushed_at": "2026-05-24T05:25:14Z"}, {"rank": 80, "full_name": "rust-lang/rust", "html_url": "https://github.com/rust-lang/rust", "description": "Empowering everyone to build reliable and efficient software.", "stargazers_count": 113053, "forks_count": 14979, "language": "Rust", "pushed_at": "2026-05-24T11:00:52Z"}, {"rank": 81, "full_name": "Hack-with-Github/Awesome-Hacking", "html_url": "https://github.com/Hack-with-Github/Awesome-Hacking", "description": "A collection of various awesome lists for hackers, pentesters and security researchers", "stargazers_count": 112966, "forks_count": 10351, "language": "", "pushed_at": "2026-05-07T16:44:36Z"}, {"rank": 82, "full_name": "d3/d3", "html_url": "https://github.com/d3/d3", "description": "Bring data to life with SVG, Canvas and HTML. :bar_chart::chart_with_upwards_trend::tada:", "stargazers_count": 112939, "forks_count": 22725, "language": "Shell", "pushed_at": "2025-12-02T17:48:19Z"}, {"rank": 83, "full_name": "mrdoob/three.js", "html_url": "https://github.com/mrdoob/three.js", "description": "JavaScript 3D Library.", "stargazers_count": 112631, "forks_count": 36374, "language": "JavaScript", "pushed_at": "2026-05-24T09:14:46Z"}, {"rank": 84, "full_name": "ggml-org/llama.cpp", "html_url": "https://github.com/ggml-org/llama.cpp", "description": "LLM inference in C/C++", "stargazers_count": 112600, "forks_count": 18680, "language": "C++", "pushed_at": "2026-05-24T11:31:19Z"}, {"rank": 85, "full_name": "Shubhamsaboo/awesome-llm-apps", "html_url": "https://github.com/Shubhamsaboo/awesome-llm-apps", "description": "100+ AI Agent & RAG apps you can actually run — clone, customize, ship.", "stargazers_count": 111631, "forks_count": 16578, "language": "Python", "pushed_at": "2026-05-23T04:24:14Z"}, {"rank": 86, "full_name": "microsoft/generative-ai-for-beginners", "html_url": "https://github.com/microsoft/generative-ai-for-beginners", "description": "21 Lessons, Get Started Building with Generative AI ", "stargazers_count": 111330, "forks_count": 59709, "language": "Jupyter Notebook", "pushed_at": "2026-05-23T12:30:52Z"}, {"rank": 87, "full_name": "godotengine/godot", "html_url": "https://github.com/godotengine/godot", "description": "Godot Engine – Multi-platform 2D and 3D game engine", "stargazers_count": 111093, "forks_count": 25421, "language": "C++", "pushed_at": "2026-05-23T00:26:58Z"}, {"rank": 88, "full_name": "axios/axios", "html_url": "https://github.com/axios/axios", "description": "Promise based HTTP client for the browser and node.js", "stargazers_count": 109075, "forks_count": 11712, "language": "JavaScript", "pushed_at": "2026-05-24T11:33:33Z"}, {"rank": 89, "full_name": "microsoft/TypeScript", "html_url": "https://github.com/microsoft/TypeScript", "description": "TypeScript is a superset of JavaScript that compiles to clean JavaScript output.", "stargazers_count": 108941, "forks_count": 13405, "language": "TypeScript", "pushed_at": "2026-05-22T19:10:18Z"}, {"rank": 90, "full_name": "GrowingGit/GitHub-Chinese-Top-Charts", "html_url": "https://github.com/GrowingGit/GitHub-Chinese-Top-Charts", "description": ":cn: GitHub中文排行榜，各语言分设「软件 | 资料」榜单，精准定位中文好项目。各取所需，高效学习。", "stargazers_count": 108069, "forks_count": 13539, "language": "Java", "pushed_at": "2024-10-12T06:51:36Z"}, {"rank": 91, "full_name": "tauri-apps/tauri", "html_url": "https://github.com/tauri-apps/tauri", "description": "Build smaller, faster, and more secure desktop and mobile applications with a web frontend.", "stargazers_count": 107029, "forks_count": 3627, "language": "Rust", "pushed_at": "2026-05-24T12:28:36Z"}, {"rank": 92, "full_name": "denoland/deno", "html_url": "https://github.com/denoland/deno", "description": "A modern runtime for JavaScript and TypeScript.", "stargazers_count": 106849, "forks_count": 6065, "language": "Rust", "pushed_at": "2026-05-24T05:18:10Z"}, {"rank": 93, "full_name": "fatedier/frp", "html_url": "https://github.com/fatedier/frp", "description": "A fast reverse proxy to help you expose a local server behind a NAT or firewall to the internet.", "stargazers_count": 106794, "forks_count": 15055, "language": "Go", "pushed_at": "2026-05-21T17:03:17Z"}, {"rank": 94, "full_name": "2dust/v2rayN", "html_url": "https://github.com/2dust/v2rayN", "description": "A GUI client for Windows, Linux and macOS, support Xray and sing-box and others", "stargazers_count": 106645, "forks_count": 15121, "language": "C#", "pushed_at": "2026-05-24T06:54:15Z"}, {"rank": 95, "full_name": "papers-we-love/papers-we-love", "html_url": "https://github.com/papers-we-love/papers-we-love", "description": "Papers from the computer science community to read and discuss.", "stargazers_count": 106453, "forks_count": 6361, "language": "Shell", "pushed_at": "2026-05-17T12:22:19Z"}, {"rank": 96, "full_name": "github/spec-kit", "html_url": "https://github.com/github/spec-kit", "description": "💫 Toolkit to help you get started with Spec-Driven Development", "stargazers_count": 105425, "forks_count": 9313, "language": "Python", "pushed_at": "2026-05-22T19:00:38Z"}, {"rank": 97, "full_name": "goldbergyoni/nodebestpractices", "html_url": "https://github.com/goldbergyoni/nodebestpractices", "description": ":white_check_mark:  The Node.js best practices list (July 2024)", "stargazers_count": 105284, "forks_count": 10737, "language": "Dockerfile", "pushed_at": "2025-04-15T21:52:42Z"}, {"rank": 98, "full_name": "msitarzewski/agency-agents", "html_url": "https://github.com/msitarzewski/agency-agents", "description": "A complete AI agency at your fingertips - From frontend wizards to Reddit community ninjas, from whimsy injectors to reality checkers. Each agent is a specialized expert with personality, processes, and proven deliverables.", "stargazers_count": 104642, "forks_count": 17220, "language": "Shell", "pushed_at": "2026-04-12T04:25:59Z"}, {"rank": 99, "full_name": "jaywcjlove/awesome-mac", "html_url": "https://github.com/jaywcjlove/awesome-mac", "description": " This project is dedicated to collecting high-quality macOS software and organizing them systematically by different categories for easy search and use.", "stargazers_count": 104607, "forks_count": 7790, "language": "Swift", "pushed_at": "2026-05-23T01:10:14Z"}, {"rank": 100, "full_name": "google-gemini/gemini-cli", "html_url": "https://github.com/google-gemini/gemini-cli", "description": "An open-source AI agent that brings the power of Gemini directly into your terminal.", "stargazers_count": 104548, "forks_count": 13827, "language": "TypeScript", "pushed_at": "2026-05-24T06:56:26Z"}]};
+  const REPO_DATA = {"generated_at": "2026-05-24T12:35:28Z", "items": [{"rank": 1, "full_name": "codecrafters-io/build-your-own-x", "html_url": "https://github.com/codecrafters-io/build-your-own-x", "description": "Master programming by recreating your favorite technologies from scratch.", "stargazers_count": 503971, "forks_count": 47814, "language": "Markdown", "pushed_at": "2026-02-21T09:34:54Z"}, {"rank": 2, "full_name": "sindresorhus/awesome", "html_url": "https://github.com/sindresorhus/awesome", "description": "😎 Awesome lists about all kinds of interesting topics", "stargazers_count": 469573, "forks_count": 35152, "language": "", "pushed_at": "2026-05-05T14:47:44Z"}, {"rank": 3, "full_name": "freeCodeCamp/freeCodeCamp", "html_url": "https://github.com/freeCodeCamp/freeCodeCamp", "description": "freeCodeCamp.org's open-source codebase and curriculum. Learn math, programming, and computer science for free.", "stargazers_count": 445363, "forks_count": 44689, "language": "TypeScript", "pushed_at": "2026-05-24T12:09:04Z"}, {"rank": 4, "full_name": "public-apis/public-apis", "html_url": "https://github.com/public-apis/public-apis", "description": "A collective list of free APIs", "stargazers_count": 436905, "forks_count": 47886, "language": "Python", "pushed_at": "2026-05-15T15:50:51Z"}, {"rank": 5, "full_name": "EbookFoundation/free-programming-books", "html_url": "https://github.com/EbookFoundation/free-programming-books", "description": ":books: Freely available programming books", "stargazers_count": 388874, "forks_count": 66346, "language": "Python", "pushed_at": "2026-05-19T12:29:12Z"}, {"rank": 6, "full_name": "openclaw/openclaw", "html_url": "https://github.com/openclaw/openclaw", "description": "Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞 ", "stargazers_count": 374306, "forks_count": 77850, "language": "TypeScript", "pushed_at": "2026-05-24T12:32:36Z"}, {"rank": 7, "full_name": "nilbuild/developer-roadmap", "html_url": "https://github.com/nilbuild/developer-roadmap", "description": "Interactive roadmaps, guides and other educational content to help developers grow in their careers.", "stargazers_count": 355359, "forks_count": 44103, "language": "TypeScript", "pushed_at": "2026-05-22T13:03:50Z"}, {"rank": 8, "full_name": "donnemartin/system-design-primer", "html_url": "https://github.com/donnemartin/system-design-primer", "description": "Learn how to design large-scale systems. Prep for the system design interview.  Includes Anki flashcards.", "stargazers_count": 350037, "forks_count": 56389, "language": "Python", "pushed_at": "2026-03-20T01:52:19Z"}, {"rank": 9, "full_name": "jwasham/coding-interview-university", "html_url": "https://github.com/jwasham/coding-interview-university", "description": "A complete computer science study plan to become a software engineer.", "stargazers_count": 347334, "forks_count": 82966, "language": "", "pushed_at": "2025-08-28T14:42:47Z"}, {"rank": 10, "full_name": "vinta/awesome-python", "html_url": "https://github.com/vinta/awesome-python", "description": "An opinionated list of Python frameworks, libraries, tools, and resources", "stargazers_count": 299338, "forks_count": 27963, "language": "Python", "pushed_at": "2026-05-24T07:25:04Z"}, {"rank": 11, "full_name": "awesome-selfhosted/awesome-selfhosted", "html_url": "https://github.com/awesome-selfhosted/awesome-selfhosted", "description": "A list of Free Software network services and web applications which can be hosted on your own servers", "stargazers_count": 294920, "forks_count": 13694, "language": "", "pushed_at": "2026-05-24T06:54:20Z"}, {"rank": 12, "full_name": "996icu/996.ICU", "html_url": "https://github.com/996icu/996.ICU", "description": "Repo for counting stars and contributing. Press F to pay respect to glorious developers.", "stargazers_count": 276235, "forks_count": 20859, "language": "", "pushed_at": "2025-08-22T06:01:29Z"}, {"rank": 13, "full_name": "practical-tutorials/project-based-learning", "html_url": "https://github.com/practical-tutorials/project-based-learning", "description": "Curated list of project-based tutorials", "stargazers_count": 266486, "forks_count": 34642, "language": "", "pushed_at": "2024-08-15T05:33:54Z"}, {"rank": 14, "full_name": "facebook/react", "html_url": "https://github.com/facebook/react", "description": "The library for web and native user interfaces.", "stargazers_count": 245234, "forks_count": 51098, "language": "JavaScript", "pushed_at": "2026-05-23T07:19:16Z"}, {"rank": 15, "full_name": "torvalds/linux", "html_url": "https://github.com/torvalds/linux", "description": "Linux kernel source tree", "stargazers_count": 234258, "forks_count": 62483, "language": "C", "pushed_at": "2026-05-24T00:07:28Z"}, {"rank": 16, "full_name": "trimstray/the-book-of-secret-knowledge", "html_url": "https://github.com/trimstray/the-book-of-secret-knowledge", "description": "A collection of inspiring lists, manuals, cheatsheets, blogs, hacks, one-liners, cli/web tools and more.", "stargazers_count": 224122, "forks_count": 13443, "language": "", "pushed_at": "2024-11-19T14:00:38Z"}, {"rank": 17, "full_name": "TheAlgorithms/Python", "html_url": "https://github.com/TheAlgorithms/Python", "description": "All Algorithms implemented in Python", "stargazers_count": 221357, "forks_count": 50671, "language": "Python", "pushed_at": "2026-05-22T11:51:35Z"}, {"rank": 18, "full_name": "vuejs/vue", "html_url": "https://github.com/vuejs/vue", "description": "This is the repo for Vue 2. For Vue 3, go to https://github.com/vuejs/core", "stargazers_count": 209802, "forks_count": 33872, "language": "TypeScript", "pushed_at": "2024-10-10T07:24:15Z"}, {"rank": 19, "full_name": "obra/superpowers", "html_url": "https://github.com/obra/superpowers", "description": "An agentic skills framework & software development methodology that works.", "stargazers_count": 204521, "forks_count": 18213, "language": "Shell", "pushed_at": "2026-05-24T00:01:48Z"}, {"rank": 20, "full_name": "ossu/computer-science", "html_url": "https://github.com/ossu/computer-science", "description": "🎓 Path to a free self-taught education in Computer Science!", "stargazers_count": 204133, "forks_count": 25402, "language": "HTML", "pushed_at": "2026-04-21T04:43:27Z"}, {"rank": 21, "full_name": "trekhleb/javascript-algorithms", "html_url": "https://github.com/trekhleb/javascript-algorithms", "description": "📝 Algorithms and data structures implemented in JavaScript with explanations and links to further readings", "stargazers_count": 196000, "forks_count": 31069, "language": "JavaScript", "pushed_at": "2026-05-20T15:01:08Z"}, {"rank": 22, "full_name": "tensorflow/tensorflow", "html_url": "https://github.com/tensorflow/tensorflow", "description": "An Open Source Machine Learning Framework for Everyone", "stargazers_count": 195253, "forks_count": 75329, "language": "C++", "pushed_at": "2026-05-24T08:24:24Z"}, {"rank": 23, "full_name": "ultraworkers/claw-code", "html_url": "https://github.com/ultraworkers/claw-code", "description": "The repo is finally unlocked. enjoy the party! The fastest repo in history to surpass 100K stars ⭐. Join Discord: https://discord.gg/5TUQKqFWd Built in Rust using oh-my-codex.", "stargazers_count": 192352, "forks_count": 109960, "language": "Rust", "pushed_at": "2026-05-24T12:03:50Z"}, {"rank": 24, "full_name": "affaan-m/ECC", "html_url": "https://github.com/affaan-m/ECC", "description": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.", "stargazers_count": 189786, "forks_count": 29357, "language": "JavaScript", "pushed_at": "2026-05-24T04:53:35Z"}, {"rank": 25, "full_name": "n8n-io/n8n", "html_url": "https://github.com/n8n-io/n8n", "description": "Fair-code workflow automation platform with native AI capabilities. Combine visual building with custom code, self-host or cloud, 400+ integrations.", "stargazers_count": 189485, "forks_count": 57961, "language": "TypeScript", "pushed_at": "2026-05-24T12:32:09Z"}, {"rank": 26, "full_name": "ohmyzsh/ohmyzsh", "html_url": "https://github.com/ohmyzsh/ohmyzsh", "description": "🙃   A delightful community-driven (with 2,500+ contributors) framework for managing your zsh configuration. Includes 300+ optional plugins (rails, git, macOS, hub, docker, homebrew, node, php, python, etc), 140+ themes to spice up your morning, and an auto-update tool that makes it easy to keep up with the latest updates from the community.", "stargazers_count": 187207, "forks_count": 26373, "language": "Shell", "pushed_at": "2026-05-24T07:16:14Z"}, {"rank": 27, "full_name": "microsoft/vscode", "html_url": "https://github.com/microsoft/vscode", "description": "Visual Studio Code", "stargazers_count": 185295, "forks_count": 40092, "language": "TypeScript", "pushed_at": "2026-05-24T06:42:23Z"}, {"rank": 28, "full_name": "Significant-Gravitas/AutoGPT", "html_url": "https://github.com/Significant-Gravitas/AutoGPT", "description": "AutoGPT is the vision of accessible AI for everyone, to use and to build on. Our mission is to provide the tools, so that you can focus on what matters.", "stargazers_count": 184500, "forks_count": 46226, "language": "Python", "pushed_at": "2026-05-24T05:21:07Z"}, {"rank": 29, "full_name": "getify/You-Dont-Know-JS", "html_url": "https://github.com/getify/You-Dont-Know-JS", "description": "A book series (2 published editions) on the JS language.", "stargazers_count": 184467, "forks_count": 33553, "language": "", "pushed_at": "2026-02-15T04:36:44Z"}, {"rank": 30, "full_name": "CyC2018/CS-Notes", "html_url": "https://github.com/CyC2018/CS-Notes", "description": ":books: 技术面试必备基础知识、Leetcode、计算机操作系统、计算机网络、系统设计", "stargazers_count": 184409, "forks_count": 50969, "language": "", "pushed_at": "2024-08-21T09:40:10Z"}, {"rank": 31, "full_name": "jackfrued/Python-100-Days", "html_url": "https://github.com/jackfrued/Python-100-Days", "description": "Python - 100天从新手到大师", "stargazers_count": 182735, "forks_count": 55700, "language": "Jupyter Notebook", "pushed_at": "2026-04-13T02:42:42Z"}, {"rank": 32, "full_name": "flutter/flutter", "html_url": "https://github.com/flutter/flutter", "description": "Flutter makes it easy and fast to build beautiful apps for mobile and beyond", "stargazers_count": 176442, "forks_count": 30398, "language": "Dart", "pushed_at": "2026-05-23T15:13:28Z"}, {"rank": 33, "full_name": "massgravel/Microsoft-Activation-Scripts", "html_url": "https://github.com/massgravel/Microsoft-Activation-Scripts", "description": "Open-source Windows and Office activator featuring HWID, Ohook, TSforge, and Online KMS activation methods, along with advanced troubleshooting.", "stargazers_count": 176204, "forks_count": 16928, "language": "Batchfile", "pushed_at": "2026-05-07T16:42:57Z"}, {"rank": 34, "full_name": "twbs/bootstrap", "html_url": "https://github.com/twbs/bootstrap", "description": "The most popular HTML, CSS, and JavaScript framework for developing responsive, mobile first projects on the web.", "stargazers_count": 174266, "forks_count": 78874, "language": "MDX", "pushed_at": "2026-05-24T08:51:43Z"}, {"rank": 35, "full_name": "github/gitignore", "html_url": "https://github.com/github/gitignore", "description": "A collection of useful .gitignore templates", "stargazers_count": 174072, "forks_count": 82494, "language": "", "pushed_at": "2026-05-21T23:49:32Z"}, {"rank": 36, "full_name": "avelino/awesome-go", "html_url": "https://github.com/avelino/awesome-go", "description": "A curated list of awesome Go frameworks, libraries and software", "stargazers_count": 173509, "forks_count": 13245, "language": "Go", "pushed_at": "2026-05-24T09:32:14Z"}, {"rank": 37, "full_name": "ollama/ollama", "html_url": "https://github.com/ollama/ollama", "description": "Get up and running with Kimi-K2.5, GLM-5, MiniMax, DeepSeek, gpt-oss, Qwen, Gemma and other models.", "stargazers_count": 172160, "forks_count": 16274, "language": "Go", "pushed_at": "2026-05-22T16:47:04Z"}, {"rank": 38, "full_name": "yt-dlp/yt-dlp", "html_url": "https://github.com/yt-dlp/yt-dlp", "description": "A feature-rich command-line audio/video downloader", "stargazers_count": 165219, "forks_count": 13877, "language": "Python", "pushed_at": "2026-05-22T17:23:04Z"}, {"rank": 39, "full_name": "NousResearch/hermes-agent", "html_url": "https://github.com/NousResearch/hermes-agent", "description": "The agent that grows with you", "stargazers_count": 165055, "forks_count": 27159, "language": "Python", "pushed_at": "2026-05-24T11:55:20Z"}, {"rank": 40, "full_name": "anomalyco/opencode", "html_url": "https://github.com/anomalyco/opencode", "description": "The open source coding agent.", "stargazers_count": 164605, "forks_count": 19499, "language": "TypeScript", "pushed_at": "2026-05-24T12:11:12Z"}, {"rank": 41, "full_name": "DigitalPlatDev/FreeDomain", "html_url": "https://github.com/DigitalPlatDev/FreeDomain", "description": "DigitalPlat FreeDomain: Free Domain For Everyone", "stargazers_count": 164529, "forks_count": 2890, "language": "HTML", "pushed_at": "2026-04-24T13:50:28Z"}, {"rank": 42, "full_name": "AUTOMATIC1111/stable-diffusion-webui", "html_url": "https://github.com/AUTOMATIC1111/stable-diffusion-webui", "description": "Stable Diffusion web UI", "stargazers_count": 163259, "forks_count": 30360, "language": "Python", "pushed_at": "2026-03-02T07:00:53Z"}, {"rank": 43, "full_name": "f/prompts.chat", "html_url": "https://github.com/f/prompts.chat", "description": "f.k.a. Awesome ChatGPT Prompts. Share, discover, and collect prompts from the community. Free and open source — self-host for your organization with complete privacy.", "stargazers_count": 162749, "forks_count": 21174, "language": "HTML", "pushed_at": "2026-05-24T04:32:05Z"}, {"rank": 44, "full_name": "jlevy/the-art-of-command-line", "html_url": "https://github.com/jlevy/the-art-of-command-line", "description": "Master the command line, in one page", "stargazers_count": 161051, "forks_count": 14814, "language": "", "pushed_at": "2024-06-25T18:13:44Z"}, {"rank": 45, "full_name": "huggingface/transformers", "html_url": "https://github.com/huggingface/transformers", "description": "🤗 Transformers: the model-definition framework for state-of-the-art machine learning models in text, vision, audio, and multimodal models, for both inference and training. ", "stargazers_count": 160922, "forks_count": 33305, "language": "Python", "pushed_at": "2026-05-22T19:58:10Z"}, {"rank": 46, "full_name": "521xueweihan/HelloGitHub", "html_url": "https://github.com/521xueweihan/HelloGitHub", "description": ":octocat: 分享 GitHub 上有趣、入门级的开源项目。Share interesting, entry-level open source projects on GitHub.", "stargazers_count": 158381, "forks_count": 12055, "language": "Python", "pushed_at": "2026-04-28T00:48:03Z"}, {"rank": 47, "full_name": "Snailclimb/JavaGuide", "html_url": "https://github.com/Snailclimb/JavaGuide", "description": "Java 面试 & 后端通用面试指南，覆盖计算机基础、数据库、分布式、高并发、系统设计与 AI 应用开发", "stargazers_count": 155846, "forks_count": 46138, "language": "JavaScript", "pushed_at": "2026-05-22T13:39:41Z"}, {"rank": 48, "full_name": "multica-ai/andrej-karpathy-skills", "html_url": "https://github.com/multica-ai/andrej-karpathy-skills", "description": "A single CLAUDE.md file to improve Claude Code behavior, derived from Andrej Karpathy's observations on LLM coding pitfalls.", "stargazers_count": 150882, "forks_count": 15481, "language": "", "pushed_at": "2026-04-20T10:05:04Z"}, {"rank": 49, "full_name": "langflow-ai/langflow", "html_url": "https://github.com/langflow-ai/langflow", "description": "Langflow is a powerful tool for building and deploying AI-powered agents and workflows.", "stargazers_count": 148704, "forks_count": 9104, "language": "Python", "pushed_at": "2026-05-24T00:58:38Z"}, {"rank": 50, "full_name": "airbnb/javascript", "html_url": "https://github.com/airbnb/javascript", "description": "JavaScript Style Guide", "stargazers_count": 148125, "forks_count": 26673, "language": "JavaScript", "pushed_at": "2026-04-16T19:24:09Z"}, {"rank": 51, "full_name": "langgenius/dify", "html_url": "https://github.com/langgenius/dify", "description": "Production-ready platform for agentic workflow development.", "stargazers_count": 142430, "forks_count": 22407, "language": "TypeScript", "pushed_at": "2026-05-24T11:39:12Z"}, {"rank": 52, "full_name": "Genymobile/scrcpy", "html_url": "https://github.com/Genymobile/scrcpy", "description": "Display and control your Android device", "stargazers_count": 142286, "forks_count": 13125, "language": "C", "pushed_at": "2026-05-24T10:33:55Z"}, {"rank": 53, "full_name": "ytdl-org/youtube-dl", "html_url": "https://github.com/ytdl-org/youtube-dl", "description": "Command-line program to download videos from YouTube.com and other video sites", "stargazers_count": 140358, "forks_count": 10676, "language": "Python", "pushed_at": "2026-02-19T16:45:25Z"}, {"rank": 54, "full_name": "anthropics/skills", "html_url": "https://github.com/anthropics/skills", "description": "Public repository for Agent Skills", "stargazers_count": 139993, "forks_count": 16534, "language": "Python", "pushed_at": "2026-05-19T14:11:10Z"}, {"rank": 55, "full_name": "yangshun/tech-interview-handbook", "html_url": "https://github.com/yangshun/tech-interview-handbook", "description": "Curated coding interview preparation materials for busy software engineers", "stargazers_count": 139693, "forks_count": 16585, "language": "TypeScript", "pushed_at": "2026-04-05T23:58:25Z"}, {"rank": 56, "full_name": "vercel/next.js", "html_url": "https://github.com/vercel/next.js", "description": "The React Framework", "stargazers_count": 139574, "forks_count": 31114, "language": "JavaScript", "pushed_at": "2026-05-24T11:11:18Z"}, {"rank": 57, "full_name": "open-webui/open-webui", "html_url": "https://github.com/open-webui/open-webui", "description": "User-friendly AI Interface (Supports Ollama, OpenAI API, ...)", "stargazers_count": 138421, "forks_count": 19802, "language": "Python", "pushed_at": "2026-05-23T12:34:14Z"}, {"rank": 58, "full_name": "x1xhlol/system-prompts-and-models-of-ai-tools", "html_url": "https://github.com/x1xhlol/system-prompts-and-models-of-ai-tools", "description": "FULL Augment Code, Claude Code, Cluely, CodeBuddy, Comet, Cursor, Devin AI, Junie, Kiro, Leap.new, Lovable, Manus, NotionAI, Orchids.app, Perplexity, Poke, Qoder, Replit, Same.dev, Trae, Traycer AI, VSCode Agent, Warp.dev, Windsurf, Xcode, Z.ai Code, Dia & v0. (And other Open Sourced) System Prompts, Internal Tools & AI Models", "stargazers_count": 138183, "forks_count": 34437, "language": "", "pushed_at": "2026-05-23T11:15:30Z"}, {"rank": 59, "full_name": "langchain-ai/langchain", "html_url": "https://github.com/langchain-ai/langchain", "description": "The agent engineering platform.", "stargazers_count": 137515, "forks_count": 22756, "language": "Python", "pushed_at": "2026-05-23T08:42:49Z"}, {"rank": 60, "full_name": "golang/go", "html_url": "https://github.com/golang/go", "description": "The Go programming language", "stargazers_count": 134042, "forks_count": 19046, "language": "Go", "pushed_at": "2026-05-23T14:39:01Z"}, {"rank": 61, "full_name": "labuladong/fucking-algorithm", "html_url": "https://github.com/labuladong/fucking-algorithm", "description": "Crack LeetCode, not only how, but also why. ", "stargazers_count": 133494, "forks_count": 23608, "language": "Markdown", "pushed_at": "2026-02-28T10:07:31Z"}, {"rank": 62, "full_name": "microsoft/PowerToys", "html_url": "https://github.com/microsoft/PowerToys", "description": "Microsoft PowerToys is a collection of utilities that supercharge productivity and customization on Windows", "stargazers_count": 133437, "forks_count": 8003, "language": "C#", "pushed_at": "2026-05-24T10:08:56Z"}, {"rank": 63, "full_name": "Chalarangelo/30-seconds-of-code", "html_url": "https://github.com/Chalarangelo/30-seconds-of-code", "description": "Coding articles to level up your development skills", "stargazers_count": 127908, "forks_count": 12487, "language": "JavaScript", "pushed_at": "2026-05-13T16:50:23Z"}, {"rank": 64, "full_name": "krahets/hello-algo", "html_url": "https://github.com/krahets/hello-algo", "description": "《Hello 算法》：动画图解、一键运行的数据结构与算法教程。支持简中、繁中、English、日本語，提供 Python, Java, C++, C, C#, JS, Go, Swift, Rust, Ruby, Kotlin, TS, Dart 等代码实现", "stargazers_count": 126349, "forks_count": 15132, "language": "Java", "pushed_at": "2026-04-18T18:23:33Z"}, {"rank": 65, "full_name": "anthropics/claude-code", "html_url": "https://github.com/anthropics/claude-code", "description": "Claude Code is an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster by executing routine tasks, explaining complex code, and handling git workflows - all through natural language commands.", "stargazers_count": 126129, "forks_count": 20703, "language": "Shell", "pushed_at": "2026-05-23T04:03:51Z"}, {"rank": 66, "full_name": "facebook/react-native", "html_url": "https://github.com/facebook/react-native", "description": "A framework for building native applications using React", "stargazers_count": 125891, "forks_count": 25154, "language": "C++", "pushed_at": "2026-05-23T13:30:40Z"}, {"rank": 67, "full_name": "microsoft/markitdown", "html_url": "https://github.com/microsoft/markitdown", "description": "Python tool for converting files and office documents to Markdown.", "stargazers_count": 124903, "forks_count": 8497, "language": "Python", "pushed_at": "2026-05-22T04:59:41Z"}, {"rank": 68, "full_name": "excalidraw/excalidraw", "html_url": "https://github.com/excalidraw/excalidraw", "description": "Virtual whiteboard for sketching hand-drawn like diagrams", "stargazers_count": 123923, "forks_count": 13758, "language": "TypeScript", "pushed_at": "2026-05-24T11:02:34Z"}, {"rank": 69, "full_name": "firecrawl/firecrawl", "html_url": "https://github.com/firecrawl/firecrawl", "description": "🔥 Search, scrape, and clean the web for AI agents.", "stargazers_count": 123597, "forks_count": 7476, "language": "TypeScript", "pushed_at": "2026-05-24T07:14:57Z"}, {"rank": 70, "full_name": "ripienaar/free-for-dev", "html_url": "https://github.com/ripienaar/free-for-dev", "description": "A list of SaaS, PaaS and IaaS offerings that have free tiers of interest to devops and infradev", "stargazers_count": 122583, "forks_count": 12864, "language": "HTML", "pushed_at": "2026-05-19T11:17:17Z"}, {"rank": 71, "full_name": "kubernetes/kubernetes", "html_url": "https://github.com/kubernetes/kubernetes", "description": "Production-Grade Container Scheduling and Management", "stargazers_count": 122439, "forks_count": 43150, "language": "Go", "pushed_at": "2026-05-23T16:26:44Z"}, {"rank": 72, "full_name": "electron/electron", "html_url": "https://github.com/electron/electron", "description": ":electron: Build cross-platform desktop apps with JavaScript, HTML, and CSS", "stargazers_count": 121397, "forks_count": 17206, "language": "C++", "pushed_at": "2026-05-23T20:01:31Z"}, {"rank": 73, "full_name": "clash-verge-rev/clash-verge-rev", "html_url": "https://github.com/clash-verge-rev/clash-verge-rev", "description": "A modern GUI client based on Tauri, designed to run in Windows, macOS and Linux for tailored proxy experience", "stargazers_count": 120486, "forks_count": 8778, "language": "TypeScript", "pushed_at": "2026-05-24T08:45:01Z"}, {"rank": 74, "full_name": "nodejs/node", "html_url": "https://github.com/nodejs/node", "description": "Node.js JavaScript runtime ✨🐢🚀✨", "stargazers_count": 117366, "forks_count": 35616, "language": "JavaScript", "pushed_at": "2026-05-24T07:30:19Z"}, {"rank": 75, "full_name": "justjavac/free-programming-books-zh_CN", "html_url": "https://github.com/justjavac/free-programming-books-zh_CN", "description": ":books: 免费的计算机编程类中文书籍，欢迎投稿", "stargazers_count": 116989, "forks_count": 28296, "language": "", "pushed_at": "2024-07-15T08:55:20Z"}, {"rank": 76, "full_name": "iptv-org/iptv", "html_url": "https://github.com/iptv-org/iptv", "description": "Collection of publicly available IPTV channels from all over the world", "stargazers_count": 116463, "forks_count": 6164, "language": "TypeScript", "pushed_at": "2026-05-24T01:06:43Z"}, {"rank": 77, "full_name": "shadcn-ui/ui", "html_url": "https://github.com/shadcn-ui/ui", "description": "A set of beautifully-designed, accessible components and a code distribution platform. Works with your favorite frameworks. Open Source. Open Code.", "stargazers_count": 114952, "forks_count": 8893, "language": "TypeScript", "pushed_at": "2026-05-23T09:19:33Z"}, {"rank": 78, "full_name": "rustdesk/rustdesk", "html_url": "https://github.com/rustdesk/rustdesk", "description": "An open-source remote desktop application designed for self-hosting, as an alternative to TeamViewer.", "stargazers_count": 114839, "forks_count": 17308, "language": "Rust", "pushed_at": "2026-05-24T11:08:45Z"}, {"rank": 79, "full_name": "Comfy-Org/ComfyUI", "html_url": "https://github.com/Comfy-Org/ComfyUI", "description": "The most powerful and modular diffusion model GUI, api and backend with a graph/nodes interface.", "stargazers_count": 114277, "forks_count": 13376, "language": "Python", "pushed_at": "2026-05-24T05:25:14Z"}, {"rank": 80, "full_name": "rust-lang/rust", "html_url": "https://github.com/rust-lang/rust", "description": "Empowering everyone to build reliable and efficient software.", "stargazers_count": 113053, "forks_count": 14979, "language": "Rust", "pushed_at": "2026-05-24T11:00:52Z"}, {"rank": 81, "full_name": "Hack-with-Github/Awesome-Hacking", "html_url": "https://github.com/Hack-with-Github/Awesome-Hacking", "description": "A collection of various awesome lists for hackers, pentesters and security researchers", "stargazers_count": 112967, "forks_count": 10351, "language": "", "pushed_at": "2026-05-07T16:44:36Z"}, {"rank": 82, "full_name": "d3/d3", "html_url": "https://github.com/d3/d3", "description": "Bring data to life with SVG, Canvas and HTML. :bar_chart::chart_with_upwards_trend::tada:", "stargazers_count": 112939, "forks_count": 22725, "language": "Shell", "pushed_at": "2025-12-02T17:48:19Z"}, {"rank": 83, "full_name": "mrdoob/three.js", "html_url": "https://github.com/mrdoob/three.js", "description": "JavaScript 3D Library.", "stargazers_count": 112631, "forks_count": 36374, "language": "JavaScript", "pushed_at": "2026-05-24T09:14:46Z"}, {"rank": 84, "full_name": "ggml-org/llama.cpp", "html_url": "https://github.com/ggml-org/llama.cpp", "description": "LLM inference in C/C++", "stargazers_count": 112601, "forks_count": 18680, "language": "C++", "pushed_at": "2026-05-24T11:31:19Z"}, {"rank": 85, "full_name": "Shubhamsaboo/awesome-llm-apps", "html_url": "https://github.com/Shubhamsaboo/awesome-llm-apps", "description": "100+ AI Agent & RAG apps you can actually run — clone, customize, ship.", "stargazers_count": 111632, "forks_count": 16578, "language": "Python", "pushed_at": "2026-05-23T04:24:14Z"}, {"rank": 86, "full_name": "microsoft/generative-ai-for-beginners", "html_url": "https://github.com/microsoft/generative-ai-for-beginners", "description": "21 Lessons, Get Started Building with Generative AI ", "stargazers_count": 111330, "forks_count": 59710, "language": "Jupyter Notebook", "pushed_at": "2026-05-23T12:30:52Z"}, {"rank": 87, "full_name": "godotengine/godot", "html_url": "https://github.com/godotengine/godot", "description": "Godot Engine – Multi-platform 2D and 3D game engine", "stargazers_count": 111093, "forks_count": 25421, "language": "C++", "pushed_at": "2026-05-23T00:26:58Z"}, {"rank": 88, "full_name": "axios/axios", "html_url": "https://github.com/axios/axios", "description": "Promise based HTTP client for the browser and node.js", "stargazers_count": 109075, "forks_count": 11712, "language": "JavaScript", "pushed_at": "2026-05-24T11:33:33Z"}, {"rank": 89, "full_name": "microsoft/TypeScript", "html_url": "https://github.com/microsoft/TypeScript", "description": "TypeScript is a superset of JavaScript that compiles to clean JavaScript output.", "stargazers_count": 108941, "forks_count": 13405, "language": "TypeScript", "pushed_at": "2026-05-22T19:10:18Z"}, {"rank": 90, "full_name": "GrowingGit/GitHub-Chinese-Top-Charts", "html_url": "https://github.com/GrowingGit/GitHub-Chinese-Top-Charts", "description": ":cn: GitHub中文排行榜，各语言分设「软件 | 资料」榜单，精准定位中文好项目。各取所需，高效学习。", "stargazers_count": 108069, "forks_count": 13539, "language": "Java", "pushed_at": "2024-10-12T06:51:36Z"}, {"rank": 91, "full_name": "tauri-apps/tauri", "html_url": "https://github.com/tauri-apps/tauri", "description": "Build smaller, faster, and more secure desktop and mobile applications with a web frontend.", "stargazers_count": 107030, "forks_count": 3627, "language": "Rust", "pushed_at": "2026-05-24T12:31:43Z"}, {"rank": 92, "full_name": "denoland/deno", "html_url": "https://github.com/denoland/deno", "description": "A modern runtime for JavaScript and TypeScript.", "stargazers_count": 106849, "forks_count": 6065, "language": "Rust", "pushed_at": "2026-05-24T05:18:10Z"}, {"rank": 93, "full_name": "fatedier/frp", "html_url": "https://github.com/fatedier/frp", "description": "A fast reverse proxy to help you expose a local server behind a NAT or firewall to the internet.", "stargazers_count": 106794, "forks_count": 15055, "language": "Go", "pushed_at": "2026-05-21T17:03:17Z"}, {"rank": 94, "full_name": "2dust/v2rayN", "html_url": "https://github.com/2dust/v2rayN", "description": "A GUI client for Windows, Linux and macOS, support Xray and sing-box and others", "stargazers_count": 106646, "forks_count": 15121, "language": "C#", "pushed_at": "2026-05-24T06:54:15Z"}, {"rank": 95, "full_name": "papers-we-love/papers-we-love", "html_url": "https://github.com/papers-we-love/papers-we-love", "description": "Papers from the computer science community to read and discuss.", "stargazers_count": 106454, "forks_count": 6361, "language": "Shell", "pushed_at": "2026-05-17T12:22:19Z"}, {"rank": 96, "full_name": "github/spec-kit", "html_url": "https://github.com/github/spec-kit", "description": "💫 Toolkit to help you get started with Spec-Driven Development", "stargazers_count": 105426, "forks_count": 9313, "language": "Python", "pushed_at": "2026-05-22T19:00:38Z"}, {"rank": 97, "full_name": "goldbergyoni/nodebestpractices", "html_url": "https://github.com/goldbergyoni/nodebestpractices", "description": ":white_check_mark:  The Node.js best practices list (July 2024)", "stargazers_count": 105284, "forks_count": 10737, "language": "Dockerfile", "pushed_at": "2025-04-15T21:52:42Z"}, {"rank": 98, "full_name": "msitarzewski/agency-agents", "html_url": "https://github.com/msitarzewski/agency-agents", "description": "A complete AI agency at your fingertips - From frontend wizards to Reddit community ninjas, from whimsy injectors to reality checkers. Each agent is a specialized expert with personality, processes, and proven deliverables.", "stargazers_count": 104645, "forks_count": 17220, "language": "Shell", "pushed_at": "2026-04-12T04:25:59Z"}, {"rank": 99, "full_name": "jaywcjlove/awesome-mac", "html_url": "https://github.com/jaywcjlove/awesome-mac", "description": " This project is dedicated to collecting high-quality macOS software and organizing them systematically by different categories for easy search and use.", "stargazers_count": 104607, "forks_count": 7790, "language": "Swift", "pushed_at": "2026-05-23T01:10:14Z"}, {"rank": 100, "full_name": "google-gemini/gemini-cli", "html_url": "https://github.com/google-gemini/gemini-cli", "description": "An open-source AI agent that brings the power of Gemini directly into your terminal.", "stargazers_count": 104548, "forks_count": 13827, "language": "TypeScript", "pushed_at": "2026-05-24T06:56:26Z"}]};
 
-    (function () {
-      const items = REPO_DATA.items || [];
-      const generatedAt = REPO_DATA.generated_at || null;
+  (function () {
+    const ALL = REPO_DATA.items || [];
+    const generatedAt = REPO_DATA.generated_at || null;
 
-      let currentItems = [...items];
-      let sortKey = 'rank';
-      let sortDir = 'asc';
-      let filterText = '';
+    /* ── State ── */
+    let filtered   = [...ALL];
+    let sortKey    = 'rank';
+    let sortDir    = 'asc';
+    let searchText = '';
+    let langFilter = '';
+    let viewMode   = 'table';
+    let expandedRow = null;
+    let maxStars   = ALL.length ? ALL[0].stargazers_count : 1;
 
-      // --- Theme ---
-      const body = document.body;
-      const themeBtn = document.getElementById('theme-toggle');
+    /* ── Language colour map (GitHub's colours) ── */
+    const LANG_COLORS = {
+      JavaScript:'#f1e05a', TypeScript:'#3178c6', Python:'#3572A5', Java:'#b07219',
+      'C++':'#f34b7d', C:'#555555', 'C#':'#178600', Go:'#00ADD8', Rust:'#dea584',
+      Ruby:'#701516', PHP:'#4F5D95', Swift:'#F05138', Kotlin:'#A97BFF',
+      Scala:'#c22d40', Shell:'#89e051', HTML:'#e34c26', CSS:'#563d7c',
+      Dart:'#00B4AB', Lua:'#000080', Haskell:'#5e5086', R:'#198CE7',
+      Markdown:'#083fa1', Jupyter:'#DA5B0B', Vue:'#41b883', Svelte:'#ff3e00',
+      Elixir:'#6e4a7e', Clojure:'#db5855', Nix:'#7e7eff'
+    };
+    function langColor(l) { return LANG_COLORS[l] || '#8c959f'; }
 
-      function applyTheme(dark) {
-        body.setAttribute('data-theme', dark ? 'dark' : 'light');
-        themeBtn.textContent = dark ? '☀️ Light' : '🌙 Dark';
-      }
+    /* ── Helpers ── */
+    function fmtNum(n) {
+      if (n >= 1e6) return (n/1e6).toFixed(2).replace(/\.?0+$/,'') + 'M';
+      if (n >= 1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'') + 'k';
+      return n.toLocaleString();
+    }
+    function fmtDate(iso) {
+      if (!iso) return '—';
+      try {
+        const d = new Date(iso), now = new Date();
+        const diff = Math.floor((now - d) / 86400000);
+        if (diff === 0) return 'today';
+        if (diff === 1) return 'yesterday';
+        if (diff < 30) return diff + 'd ago';
+        if (diff < 365) return Math.floor(diff/30) + 'mo ago';
+        return Math.floor(diff/365) + 'yr ago';
+      } catch(_) { return '—'; }
+    }
+    function fmtFullDate(iso) {
+      if (!iso) return '—';
+      try {
+        return new Date(iso).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+      } catch(_) { return '—'; }
+    }
+    function esc(s) {
+      if (typeof s !== 'string') return '';
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function medal(rank) {
+      if (rank === 1) return '<span class="rank-medal" title="Gold">🥇</span>';
+      if (rank === 2) return '<span class="rank-medal" title="Silver">🥈</span>';
+      if (rank === 3) return '<span class="rank-medal" title="Bronze">🥉</span>';
+      return '<span class="rank-cell">' + rank + '</span>';
+    }
+    function trending(r) {
+      if (r.rank <= 10) return '<span class="trending-badge">🔥 HOT</span>';
+      return '';
+    }
 
-      function initTheme() {
-        const saved = localStorage.getItem('gh100-theme');
-        if (saved) {
-          applyTheme(saved === 'dark');
-        } else {
-          applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches);
-        }
-      }
+    /* ── Toast ── */
+    let toastTimer;
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+    }
 
-      themeBtn.addEventListener('click', function () {
-        const isDark = body.getAttribute('data-theme') === 'dark';
-        applyTheme(!isDark);
-        localStorage.setItem('gh100-theme', !isDark ? 'dark' : 'light');
+    /* ── Hero stats ── */
+    function buildHeroStats() {
+      if (!ALL.length) return;
+      const totalStars = ALL.reduce((s, r) => s + r.stargazers_count, 0);
+      const totalForks = ALL.reduce((s, r) => s + r.forks_count, 0);
+      const langs      = new Set(ALL.map(r => r.language).filter(Boolean)).size;
+      document.getElementById('stat-total-stars').textContent = fmtNum(totalStars);
+      document.getElementById('stat-top-stars').textContent   = fmtNum(ALL[0].stargazers_count);
+      document.getElementById('stat-languages').textContent   = langs;
+      document.getElementById('stat-total-forks').textContent = fmtNum(totalForks);
+    }
+
+    /* ── Language pills ── */
+    function buildLangPills() {
+      const counts = {};
+      ALL.forEach(r => { if (r.language) counts[r.language] = (counts[r.language]||0) + 1; });
+      const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, 14);
+      const container = document.getElementById('lang-pills');
+
+      const all = document.createElement('button');
+      all.className = 'lang-pill active';
+      all.dataset.lang = '';
+      all.innerHTML = 'All <span class="lang-count">' + ALL.length + '</span>';
+      container.appendChild(all);
+
+      sorted.forEach(([lang, count]) => {
+        const btn = document.createElement('button');
+        btn.className = 'lang-pill';
+        btn.dataset.lang = lang;
+        btn.innerHTML =
+          '<span class="dot" style="background:' + langColor(lang) + '"></span>' +
+          esc(lang) + ' <span class="lang-count">' + count + '</span>';
+        container.appendChild(btn);
       });
 
-      initTheme();
-
-      // --- Last updated ---
-      if (generatedAt) {
-        try {
-          const d = new Date(generatedAt);
-          document.getElementById('last-updated').textContent =
-            'Updated: ' + d.toLocaleString('en-US', {
-              year: 'numeric', month: 'short', day: 'numeric',
-              hour: '2-digit', minute: '2-digit', timeZone: 'UTC', timeZoneName: 'short'
-            });
-        } catch (_) {}
-      }
-
-      // --- Sort ---
-      const numCols = new Set(['rank', 'stargazers_count', 'forks_count']);
-
-      function sortItems(data) {
-        return [...data].sort(function (a, b) {
-          let av = a[sortKey], bv = b[sortKey];
-          if (numCols.has(sortKey)) {
-            return sortDir === 'asc' ? av - bv : bv - av;
-          }
-          av = (av || '').toLowerCase();
-          bv = (bv || '').toLowerCase();
-          const cmp = av.localeCompare(bv);
-          return sortDir === 'asc' ? cmp : -cmp;
-        });
-      }
-
-      // --- Filter ---
-      function filterItems() {
-        if (!filterText) return [...items];
-        const q = filterText.toLowerCase();
-        return items.filter(function (r) {
-          return r.full_name.toLowerCase().includes(q) ||
-            r.description.toLowerCase().includes(q) ||
-            r.language.toLowerCase().includes(q);
-        });
-      }
-
-      // --- Format helpers ---
-      function fmtNum(n) {
-        if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
-        return n.toLocaleString();
-      }
-
-      function fmtDate(iso) {
-        if (!iso) return '';
-        try {
-          const d = new Date(iso);
-          const now = new Date();
-          const diff = Math.floor((now - d) / 86400000);
-          if (diff === 0) return 'today';
-          if (diff === 1) return 'yesterday';
-          if (diff < 30) return diff + 'd ago';
-          if (diff < 365) return Math.floor(diff / 30) + 'mo ago';
-          return Math.floor(diff / 365) + 'yr ago';
-        } catch (_) { return ''; }
-      }
-
-      function escHtml(s) {
-        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-      }
-
-      // --- Render ---
-      function render() {
-        const sorted = sortItems(currentItems);
-        const tbody = document.getElementById('repo-body');
-
-        if (!sorted.length) {
-          tbody.innerHTML = '<tr><td colspan="7" class="no-results">No repositories match your search.</td></tr>';
-          document.getElementById('result-count').textContent = '0 results';
-          return;
-        }
-
-        document.getElementById('result-count').textContent =
-          sorted.length === items.length
-            ? items.length + ' repositories'
-            : sorted.length + ' of ' + items.length + ' repositories';
-
-        const frag = document.createDocumentFragment();
-        sorted.forEach(function (r) {
-          const tr = document.createElement('tr');
-          tr.innerHTML =
-            '<td class="col-rank">' + r.rank + '</td>' +
-            '<td class="col-name"><a class="repo-link" href="' + escHtml(r.html_url) + '" target="_blank" rel="noopener">' + escHtml(r.full_name) + '</a></td>' +
-            '<td class="col-desc"><span class="desc-cell" title="' + escHtml(r.description) + '">' + escHtml(r.description) + '</span></td>' +
-            '<td class="col-stars"><span class="stat stars">★ ' + fmtNum(r.stargazers_count) + '</span></td>' +
-            '<td class="col-forks"><span class="stat forks">⑂ ' + fmtNum(r.forks_count) + '</span></td>' +
-            '<td class="col-lang">' + (r.language ? '<span class="lang-badge">' + escHtml(r.language) + '</span>' : '') + '</td>' +
-            '<td class="col-updated">' + fmtDate(r.pushed_at) + '</td>';
-          frag.appendChild(tr);
-        });
-
-        tbody.replaceChildren(frag);
-      }
-
-      // --- Column header click sorting ---
-      document.querySelectorAll('th[data-col]').forEach(function (th) {
-        th.addEventListener('click', function () {
-          const col = th.getAttribute('data-col');
-          if (sortKey === col) {
-            sortDir = sortDir === 'asc' ? 'desc' : 'asc';
-          } else {
-            sortKey = col;
-            sortDir = col === 'rank' ? 'asc' : 'desc';
-          }
-          document.querySelectorAll('th[data-col]').forEach(function (t) {
-            t.classList.remove('sort-asc', 'sort-desc');
-          });
-          th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
-          render();
-        });
+      container.addEventListener('click', function(e) {
+        const pill = e.target.closest('.lang-pill');
+        if (!pill) return;
+        langFilter = pill.dataset.lang;
+        container.querySelectorAll('.lang-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        applyFilters();
       });
+    }
 
-      // Set initial sort indicator
-      const rankTh = document.querySelector('th[data-col="rank"]');
-      if (rankTh) rankTh.classList.add('sort-asc');
-
-      // --- Search ---
-      document.getElementById('search').addEventListener('input', function (e) {
-        filterText = e.target.value.trim();
-        currentItems = filterItems();
-        render();
+    /* ── Filter + sort ── */
+    function applyFilters() {
+      const q = searchText.toLowerCase();
+      filtered = ALL.filter(r => {
+        const matchLang = !langFilter || r.language === langFilter;
+        const matchQ    = !q ||
+          r.full_name.toLowerCase().includes(q) ||
+          r.description.toLowerCase().includes(q) ||
+          r.language.toLowerCase().includes(q);
+        return matchLang && matchQ;
       });
+      sortFiltered();
+      render();
+    }
+    function sortFiltered() {
+      const num = new Set(['rank','stargazers_count','forks_count']);
+      filtered.sort((a,b) => {
+        let av = a[sortKey], bv = b[sortKey];
+        if (num.has(sortKey)) return sortDir === 'asc' ? av-bv : bv-av;
+        av = (av||'').toLowerCase(); bv = (bv||'').toLowerCase();
+        return sortDir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+      });
+    }
 
-      // --- Initial render ---
-      if (items.length === 0) {
-        document.getElementById('repo-body').innerHTML =
-          '<tr><td colspan="7" class="no-results">No data available. Run the fetch script to populate this page.</td></tr>';
-        document.getElementById('result-count').textContent = '0 repositories';
+    /* ── Render ── */
+    function render() {
+      updateToolbar();
+      if (!filtered.length) {
+        document.getElementById('empty-state').style.display = '';
+        document.getElementById('table-view').style.display  = 'none';
+        document.getElementById('cards-view').style.display  = 'none';
+        return;
+      }
+      document.getElementById('empty-state').style.display = 'none';
+      if (viewMode === 'table') {
+        document.getElementById('table-view').style.display = '';
+        document.getElementById('cards-view').style.display = 'none';
+        renderTable();
       } else {
-        render();
+        document.getElementById('table-view').style.display = 'none';
+        document.getElementById('cards-view').style.display = '';
+        renderCards();
       }
-    })();
+    }
+
+    function updateToolbar() {
+      const info = document.getElementById('result-info');
+      if (!filtered.length) {
+        info.innerHTML = '<strong>0</strong> repositories';
+      } else if (filtered.length === ALL.length) {
+        info.innerHTML = 'Showing <strong>' + ALL.length + '</strong> repositories';
+      } else {
+        info.innerHTML = 'Showing <strong>' + filtered.length + '</strong> of <strong>' + ALL.length + '</strong> repositories';
+      }
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('repo-body');
+      const frag  = document.createDocumentFragment();
+      expandedRow = null;
+
+      filtered.forEach(function(r) {
+        const pct = Math.round((r.stargazers_count / maxStars) * 100);
+        const [owner, name] = r.full_name.split('/');
+        const tr = document.createElement('tr');
+        tr.dataset.rank = r.rank;
+        tr.innerHTML =
+          '<td class="td-center">' + medal(r.rank) + '</td>' +
+          '<td>' +
+            '<div class="repo-name-cell">' +
+              '<a class="repo-link" href="' + esc(r.html_url) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">' +
+                esc(name) + '</a>' + trending(r) +
+              '<span class="repo-owner">by <b>' + esc(owner) + '</b></span>' +
+            '</div>' +
+          '</td>' +
+          '<td class="col-desc"><span class="desc-text" title="' + esc(r.description) + '">' + esc(r.description) + '</span></td>' +
+          '<td class="td-right">' +
+            '<div class="star-bar-wrap">' +
+              '<div class="star-bar-bg"><div class="star-bar-fill" style="width:' + pct + '%"></div></div>' +
+              '<span class="stat-pill stat-stars">★ ' + fmtNum(r.stargazers_count) + '</span>' +
+            '</div>' +
+          '</td>' +
+          '<td class="td-right col-forks"><span class="stat-pill stat-forks">⑂ ' + fmtNum(r.forks_count) + '</span></td>' +
+          '<td>' + (r.language ? '<span class="lang-tag"><span class="lang-dot" style="background:' + langColor(r.language) + '"></span>' + esc(r.language) + '</span>' : '<span style="color:var(--text-muted)">—</span>') + '</td>' +
+          '<td class="col-updated" style="color:var(--text-sub)">' + fmtDate(r.pushed_at) + '</td>';
+
+        tr.addEventListener('click', function() { toggleExpand(tr, r); });
+        frag.appendChild(tr);
+      });
+
+      tbody.replaceChildren(frag);
+    }
+
+    function toggleExpand(tr, r) {
+      const existing = tr.nextElementSibling;
+      if (existing && existing.classList.contains('expand-row')) {
+        existing.remove();
+        tr.classList.remove('expanded');
+        expandedRow = null;
+        return;
+      }
+      // close previous
+      const prev = document.querySelector('.expand-row');
+      if (prev) {
+        prev.previousElementSibling && prev.previousElementSibling.classList.remove('expanded');
+        prev.remove();
+      }
+
+      tr.classList.add('expanded');
+      expandedRow = r.rank;
+
+      const detailTr = document.createElement('tr');
+      detailTr.className = 'expand-row';
+      const td = document.createElement('td');
+      td.colSpan = 7;
+      td.innerHTML =
+        '<div class="expand-content">' +
+          '<div class="expand-stat"><span class="expand-stat-label">⭐ Stars</span><span class="expand-stat-value">' + r.stargazers_count.toLocaleString() + '</span></div>' +
+          '<div class="expand-stat"><span class="expand-stat-label">⑂ Forks</span><span class="expand-stat-value">' + r.forks_count.toLocaleString() + '</span></div>' +
+          '<div class="expand-stat"><span class="expand-stat-label">🏆 Rank</span><span class="expand-stat-value">#' + r.rank + ' of 100</span></div>' +
+          '<div class="expand-stat"><span class="expand-stat-label">📅 Last push</span><span class="expand-stat-value">' + fmtFullDate(r.pushed_at) + '</span></div>' +
+          '<div class="expand-stat"><span class="expand-stat-label">💻 Language</span><span class="expand-stat-value">' + (r.language || '—') + '</span></div>' +
+          '<div class="expand-stat"><span class="expand-stat-label">📊 Star %</span><span class="expand-stat-value">' + ((r.stargazers_count/maxStars*100).toFixed(1)) + '% of #1</span></div>' +
+          '<div class="expand-actions">' +
+            '<a class="expand-link primary" href="' + esc(r.html_url) + '" target="_blank" rel="noopener">View on GitHub ↗</a>' +
+            '<a class="expand-link" href="' + esc(r.html_url) + '/stargazers" target="_blank" rel="noopener">⭐ Stargazers</a>' +
+            '<a class="expand-link" href="' + esc(r.html_url) + '/network/members" target="_blank" rel="noopener">⑂ Forks</a>' +
+            '<a class="expand-link" href="' + esc(r.html_url) + '/issues" target="_blank" rel="noopener">🐛 Issues</a>' +
+          '</div>' +
+        '</div>';
+      detailTr.appendChild(td);
+      tr.parentNode.insertBefore(detailTr, tr.nextSibling);
+    }
+
+    function renderCards() {
+      const grid = document.getElementById('cards-body');
+      const frag = document.createDocumentFragment();
+      filtered.forEach(function(r) {
+        const [owner, name] = r.full_name.split('/');
+        const div = document.createElement('div');
+        div.className = 'repo-card';
+        div.innerHTML =
+          '<div class="card-header">' +
+            '<span class="card-rank">#' + r.rank + (r.rank <= 3 ? ' ' + ['🥇','🥈','🥉'][r.rank-1] : '') + '</span>' +
+            (r.language ? '<span class="lang-tag"><span class="lang-dot" style="background:' + langColor(r.language) + '"></span>' + esc(r.language) + '</span>' : '') +
+          '</div>' +
+          '<a class="card-name" href="' + esc(r.html_url) + '" target="_blank" rel="noopener">' + esc(r.full_name) + '</a>' +
+          '<p class="card-desc">' + (r.description ? esc(r.description) : '<em style="color:var(--text-muted)">No description</em>') + '</p>' +
+          '<div class="card-footer">' +
+            '<div class="card-stats">' +
+              '<span class="card-stat s">★ ' + fmtNum(r.stargazers_count) + '</span>' +
+              '<span class="card-stat f">⑂ ' + fmtNum(r.forks_count) + '</span>' +
+            '</div>' +
+            '<span style="font-size:11px;color:var(--text-muted)">' + fmtDate(r.pushed_at) + '</span>' +
+          '</div>';
+        div.addEventListener('click', function(e) {
+          if (e.target.tagName !== 'A') window.open(r.html_url, '_blank', 'noopener');
+        });
+        frag.appendChild(div);
+      });
+      grid.replaceChildren(frag);
+    }
+
+    /* ── Sort headers ── */
+    function updateSortHeaders() {
+      document.querySelectorAll('th[data-col]').forEach(th => {
+        th.classList.remove('sort-asc','sort-desc');
+        if (th.dataset.col === sortKey) th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+      });
+    }
+    document.querySelectorAll('th[data-col]').forEach(th => {
+      th.addEventListener('click', function() {
+        const col = th.dataset.col;
+        if (sortKey === col) {
+          sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          sortKey = col;
+          sortDir = ['stargazers_count','forks_count'].includes(col) ? 'desc' : 'asc';
+        }
+        updateSortHeaders();
+        sortFiltered();
+        render();
+      });
+    });
+    updateSortHeaders();
+
+    /* ── Search ── */
+    const searchEl = document.getElementById('search');
+    const clearBtn = document.getElementById('search-clear');
+    searchEl.addEventListener('input', function() {
+      searchText = searchEl.value;
+      clearBtn.classList.toggle('visible', !!searchText);
+      applyFilters();
+    });
+    clearBtn.addEventListener('click', function() {
+      searchEl.value = '';
+      searchText = '';
+      clearBtn.classList.remove('visible');
+      applyFilters();
+      searchEl.focus();
+    });
+
+    /* ── View toggle ── */
+    document.getElementById('view-table').addEventListener('click', function() {
+      viewMode = 'table';
+      this.classList.add('active');
+      document.getElementById('view-cards').classList.remove('active');
+      render();
+    });
+    document.getElementById('view-cards').addEventListener('click', function() {
+      viewMode = 'cards';
+      this.classList.add('active');
+      document.getElementById('view-table').classList.remove('active');
+      render();
+    });
+
+    /* ── Theme ── */
+    function applyTheme(dark) {
+      document.body.setAttribute('data-theme', dark ? 'dark' : 'light');
+      document.getElementById('theme-label').textContent = dark ? 'Light' : 'Dark';
+      const icon = document.getElementById('theme-icon');
+      icon.innerHTML = dark
+        ? '<path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-1.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm5.657-8.157a.75.75 0 0 1 0 1.06l-1.061 1.06a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.06-1.06a.75.75 0 0 1 1.061 0Zm-9.193 9.193a.75.75 0 0 1 0 1.06l-1.06 1.061a.75.75 0 1 1-1.061-1.06l1.06-1.061a.75.75 0 0 1 1.061 0ZM8 0a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 8 0Zm0 13a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13Zm8-5a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 16 8ZM3 8a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 3 8Zm10.657 3.343a.75.75 0 0 1-1.06 1.06l-1.061-1.06a.75.75 0 1 1 1.06-1.06Zm-9.193-9.193a.75.75 0 0 1-1.06 1.06L2.343 2.15a.75.75 0 1 1 1.061-1.06Z"/>'
+        : '<path d="M9.598 1.591a.749.749 0 0 1 .785-.175 7 7 0 1 1-8.967 8.967.75.75 0 0 1 .961-.96 5.5 5.5 0 0 0 7.046-7.046.75.75 0 0 1 .175-.786Zm1.616 1.945a7 7 0 0 1-7.678 7.678 5.499 5.499 0 1 0 7.678-7.678Z"/>';
+    }
+    function initTheme() {
+      const saved = localStorage.getItem('gh100-theme');
+      applyTheme(saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+    document.getElementById('theme-toggle').addEventListener('click', function() {
+      const isDark = document.body.getAttribute('data-theme') === 'dark';
+      applyTheme(!isDark);
+      localStorage.setItem('gh100-theme', !isDark ? 'dark' : 'light');
+    });
+    initTheme();
+
+    /* ── Share ── */
+    document.getElementById('share-btn').addEventListener('click', function() {
+      navigator.clipboard.writeText(location.href).then(() => toast('Link copied to clipboard!'));
+    });
+
+    /* ── Last updated ── */
+    if (generatedAt) {
+      try {
+        const d = new Date(generatedAt);
+        document.getElementById('updated-info').textContent =
+          'Updated ' + d.toLocaleString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit', timeZone:'UTC', timeZoneName:'short' });
+      } catch(_) {}
+    }
+
+    /* ── Back to top ── */
+    const btt = document.getElementById('back-top');
+    window.addEventListener('scroll', function() {
+      btt.classList.toggle('visible', window.scrollY > 400);
+    }, { passive: true });
+    btt.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+    /* ── Keyboard shortcut: / focuses search ── */
+    document.addEventListener('keydown', function(e) {
+      if (e.key === '/' && document.activeElement !== searchEl) {
+        e.preventDefault();
+        searchEl.focus();
+        searchEl.select();
+      }
+      if (e.key === 'Escape' && document.activeElement === searchEl) {
+        searchEl.blur();
+      }
+    });
+
+    /* ── Init ── */
+    buildHeroStats();
+    buildLangPills();
+    applyFilters();
+  })();
   </script>
 </body>
 </html>
