@@ -34,7 +34,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: .
-          include_files: index.html
+          exclude_assets: '.gitignore,requirements.txt,scripts,templates,.claude,README.md'
           publish_branch: gh-pages
-          keep_files: true
+          keep_files: false
           commit_message: "chore: update top 100 repos [skip ci]"
